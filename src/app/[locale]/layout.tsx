@@ -5,16 +5,25 @@ import { Metadata } from "next";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import Header from "@/components/shared/Header";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const geistSans = localFont({
-    src: "../fonts/GeistVF.woff",
-    variable: "--font-geist-sans",
-    weight: "100 900",
+export const poppins = localFont({
+    src: "../fonts/Poppins.woff",
+    variable: "--font-poppins-regular",
+    weight: "400",
 });
-const geistMono = localFont({
-    src: "../fonts/GeistMonoVF.woff",
-    variable: "--font-geist-mono",
-    weight: "100 900",
+
+export const poppinsBold = localFont({
+    src: "../fonts/Poppins-Black.woff",
+    variable: "--font-poppins-bold",
+    weight: "700",
+});
+
+const sacramento = localFont({
+    src: "../fonts/Sacramento.woff",
+    variable: "--font-sacramento",
+    weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +42,7 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={`${poppins.variable} ${poppinsBold.variable}  ${sacramento.variable} antialiased `}
             >
                 <ThemeProvider
                     attribute="class"
@@ -44,6 +53,7 @@ export default async function RootLayout({
                     <NextIntlClientProvider messages={messages}>
                         <Header />
                         {children}
+                        <ToastContainer />
                     </NextIntlClientProvider>
                 </ThemeProvider>
             </body>
