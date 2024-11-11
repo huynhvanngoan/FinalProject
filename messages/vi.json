@@ -2,6 +2,13 @@
     "HomePage": {
         "languages": "Ngôn ngữ",
         "vi": "Tiếng Việt",
-        "en": "Tiếng Anh"
+        "en": "Tiếng Anh",
+        "home": "Trang Chủ",
+        "about-us": "Về Chúng Tôi",
+        "destination": "Điểm Đến",
+        "our-tour": "Chuyến Đi",
+        "blog": "Blog",
+        "contact-us": "Liên Hệ",
+        "login": "Đăng nhập"
     }
 }
