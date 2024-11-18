@@ -15,33 +15,33 @@ export const languages = [
 
 export const navbarItems = [
     {
-        title: "Home",
+        title: "home",
         url: "/",
-        icon: "mdi:home-outline", 
+        icon: "mdi:home", // Nhà
     },
     {
-        title: "Tours",
-        url: "/tours",
-        icon: "mdi:airplane-takeoff",
-    },
-    {
-        title: "Hotels",
-        url: "/hotels",
-        icon: "mdi:hotel-outline", 
-    },
-    {
-        title: "Blog",
-        url: "/blog",
-        icon: "mdi:newspaper-variant-outline", 
-    },
-    {
-        title: "About Us",
+        title: "about-us",
         url: "/about-us",
-        icon: "mdi:information-outline", 
+        icon: "mdi:information",
     },
     {
-        title: "Contact",
-        url: "/contact",
-        icon: "mdi:email-outline", 
+        title: "destination",
+        url: "/destination",
+        icon: "mdi:map-marker",
+    },
+    {
+        title: "our-tour",
+        url: "/our-tour",
+        icon: "mdi:earth",
+    },
+    {
+        title: "blog",
+        url: "/blog",
+        icon: "mdi:pencil",
+    },
+    {
+        title: "contact-us",
+        url: "/contact-us",
+        icon: "mdi:phone",
     },
 ];

@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ToggleMode from "./ToggleMode";
 import DropdownLanguages from "./DropdownLanguages";
 import Image from "next/image";
@@ -8,13 +10,60 @@ import Logo from "@/public/Logo.svg";
 import { navbarItems } from "@/utils/constants";
 import { Icon } from "@iconify/react";
 import { usePathname } from "next/navigation";
+import SearchBox from "./SearchBox";
+import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 const Header = () => {
+    const t = useTranslations("HomePage");
+    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+    const [_, locale] = pathname.split("/");
+    let menuClasses: string[] = [];
+
+    const getMenuClasses = () => {
+        if (isOpen) {
+            menuClasses = [
+                "flex",
+                "flex-col",
+                "absolute",
+                "top-[65px]",
+                "bg-secondary",
+                "w-full",
+                "pt-5",
+                "pb-10",
+                "px-20",
+                "left-0",
+                "gap-10",
+                "item-center",
+                "justify-center",
+            ];
+        } else {
+            menuClasses = [
+                "hidden",
+                " md:flex",
+                " md:flex-row",
+                "md:space-y-0",
+                "md:space-x-8 md:space-y-0",
+            ];
+        }
+
+        return menuClasses.join(" ");
+    };
+    const handleResize = () => {
+        if (window.innerWidth > 768 && isOpen) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, [isOpen]);
 
     return (
-        <header className="bg-secondary p-4 shadow-md">
-            <nav className="flex flex-col min-w-full items-center md:flex-row md:justify-between">
+        <header className="w-full bg-secondary py-4 md:p-4 shadow-md sticky top-0 z-10">
+            <nav className=" relative flex min-w-full items-center flex-row justify-evenly">
                 <div>
                     <Link href="/">
                         <Image
@@ -25,14 +74,19 @@ const Header = () => {
                         />
                     </Link>
                 </div>
-                <div className="my-4 md:my-0">
-                    <ul className="flex flex-col md:flex-row md:space-x-8 md:space-y-0 ">
+                <div className=" my-4 md:my-0">
+                    <ul
+                        // className={`${
+                        //     isOpen ? "flex" : "hidden"
+                        // } md:flex  md:flex-row flex-col md:space-x-8 md:space-y-0 `}
+                        className={getMenuClasses()}
+                    >
                         {navbarItems.map((item, index) => {
                             const isActive = pathname === item.url;
                             return (
                                 <li
                                     key={index}
-                                    className={`flex items-center space-x-2 transition-colors duration-300 ${
+                                    className={`flex items-center text-nowrap space-x-2 transition-colors duration-300 ${
                                         isActive
                                             ? "text-primary font-bold"
                                             : "hover:text-primary"
@@ -43,20 +97,35 @@ const Header = () => {
                                         width={24}
                                         height={24}
                                     />
-                                    <Link href={item.url}>{item.title}</Link>
+                                    <Link href={`/${locale}${item.url}`}>
+                                        {t(`${item.title}`)}
+                                    </Link>
                                 </li>
                             );
                         })}
                     </ul>
                 </div>
-                <div className="flex space-x-4 items-center mt-4 md:mt-0">
+                <div className="mx-4 hidden sm:block">
+                    <SearchBox />
+                </div>
+                <div className="flex space-x-4 items-center ">
                     <DropdownLanguages />
                     <ToggleMode />
                     <Link href="/login">
-                        <button className="px-8 py-2 text-white bg-primary rounded-md">
-                            Login
-                        </button>
+                        <Button className="flex items-center p-4 text-white text-base bg-primary rounded-full">
+                            <Icon icon="iconoir:user" />
+                            <span>{t("login")}</span>
+                        </Button>
                     </Link>
+                </div>
+                <div className="md:hidden flex items-center mx-2">
+                    <Button
+                        onClick={() => {
+                            setIsOpen(!isOpen);
+                        }}
+                    >
+                        <Icon icon="mi:menu" />
+                    </Button>
                 </div>
             </nav>
         </header>

@@ -2,6 +2,13 @@
     "HomePage": {
         "languages": "Languages",
         "vi": "Vietnamese",
-        "en": "English"
+        "en": "English",
+        "home":"Home",
+        "about-us":"About Us",
+        "destination":"Destination",
+        "our-tour": "Our Tour",
+        "blog" : "Blog",
+        "contact-us": "Contact Us",
+        "login": "Login"
     }
 }
