@@ -1,6 +1,5 @@
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
-import "../../styles/globals.scss";
-import localFont from "next/font/local";
+import "../../../styles/globals.scss";
 import { Metadata } from "next";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
@@ -8,23 +7,7 @@ import Header from "@/components/shared/Header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const poppins = localFont({
-    src: "../fonts/Poppins.woff",
-    variable: "--font-poppins-regular",
-    weight: "400",
-});
 
-export const poppinsBold = localFont({
-    src: "../fonts/Poppins-Black.woff",
-    variable: "--font-poppins-bold",
-    weight: "700",
-});
-
-const sacramento = localFont({
-    src: "../fonts/Sacramento.woff",
-    variable: "--font-sacramento",
-    weight: "400",
-});
 
 export const metadata: Metadata = {
     title: "Travel Booking",
@@ -41,9 +24,7 @@ export default async function RootLayout({
 
     return (
         <html lang={locale}>
-            <body
-                className={`${poppins.variable} ${poppinsBold.variable}  ${sacramento.variable} antialiased `}
-            >
+            <body className="antialiased">
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"
