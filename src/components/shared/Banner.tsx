@@ -26,7 +26,7 @@ const Banner: React.FC<BannerProps> = ({ bgImage, title }) => {
 
     return (
         <div
-            className="w-full h-[500px] relative flex flex-col justify-center items-center text-center text-white"
+            className="-z-10 w-full h-[500px] relative flex flex-col justify-center items-center text-center text-white"
             style={{
                 backgroundImage: `url(${bgImageUrl})`,
                 backgroundSize: "cover",

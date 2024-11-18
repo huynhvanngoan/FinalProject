@@ -19,8 +19,8 @@ const BlogCard: React.FC<BlogCardProps> = ({
     link,
 }) => {
     return (
-        <div className="relative w-full border rounded-lg pt-5 pb-[30px] pr-5 pl-[30px] group overflow-hidden">
-            <div className="relative z-50 h-[450px] w-full">
+        <div className=" relative w-full border rounded-lg pt-5 pb-[30px] pr-5 pl-[30px] group overflow-hidden">
+            <div className="relative z-10 h-[450px] w-full">
                 {/* Read Time */}
                 <div className="absolute py-1 px-4 rounded-full right-0 bg-white/[0.3] text-white">
                     <span>{readTime} Read</span>

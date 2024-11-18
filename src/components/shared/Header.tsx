@@ -62,7 +62,7 @@ const Header = () => {
     }, [isOpen]);
 
     return (
-        <header className="w-full bg-secondary py-4 md:p-4 shadow-md sticky top-0 z-10">
+        <header className="w-full bg-secondary py-4 md:p-4 shadow-md sticky top-0 z-30">
             <nav className=" relative flex min-w-full items-center flex-row justify-evenly">
                 <div>
                     <Link href="/">

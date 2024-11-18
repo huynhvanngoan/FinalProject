@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import {
     DropdownMenu,
@@ -12,12 +12,25 @@ import { Icon } from "@iconify/react";
 import { useTranslations } from "next-intl";
 import { languages } from "@/utils/constants";
 import { useRouter } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation"; // Import to access the current path
 
 const DropdownLanguages = () => {
     const t = useTranslations("HomePage");
     const router = useRouter();
+    const pathname = usePathname(); // Get the current path
+    const searchParams = useSearchParams(); // Get the current search parameters
+
     const changeLanguage = (locale: string) => {
-        router.push(`/${locale}`);
+        // Get the current search params
+        const currentSearch = searchParams.toString();
+
+        // Update the router path, keeping the current path and appending the language
+        // If your app's routing structure uses locale in the path, you can adjust accordingly
+        router.push(
+            `/${locale}${pathname.substring(3)}${
+                currentSearch ? `?${currentSearch}` : ""
+            }`
+        );
     };
 
     return (
