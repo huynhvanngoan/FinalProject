@@ -1,18 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Banner from "@/components/shared/Banner";
 import React, { useState } from "react";
 import bgImg from "@/public/ourtour.jpg";
-import Link from "next/link";
 import TourCard from "@/components/shared/TourCard";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"; // Import các thành phần Pagination từ shadcn/ui
+
 import ClientLogos from "@/components/homeComponents/ClientLogos";
+import PaginationCustom from "@/components/shared/Pagination";
+import { paginate } from "@/utils/helpers";
+import { usePathname } from "next/navigation";
 
 const tourListData = [
     {
@@ -24,6 +21,7 @@ const tourListData = [
         date: "August 7, 2024",
         price: 88,
         rating: 4.4,
+        link: "sok-national-park",
     },
     {
         id: 2,
@@ -34,6 +32,7 @@ const tourListData = [
         date: "September 12, 2024",
         price: 120,
         rating: 4.7,
+        link: "phang-nga-bay",
     },
     {
         id: 3,
@@ -44,6 +43,7 @@ const tourListData = [
         date: "October 15, 2024",
         price: 200,
         rating: 4.8,
+        link: "yosemite-national-park",
     },
     {
         id: 4,
@@ -54,6 +54,7 @@ const tourListData = [
         date: "November 25, 2024",
         price: 300,
         rating: 4.9,
+        link: "great-barrier-reef",
     },
     {
         id: 5,
@@ -64,6 +65,7 @@ const tourListData = [
         date: "December 5, 2024",
         price: 250,
         rating: 4.6,
+        link: "kruger-national-park",
     },
     {
         id: 6,
@@ -74,6 +76,7 @@ const tourListData = [
         date: "January 10, 2025",
         price: 180,
         rating: 4.5,
+        link: "amazon-rainforest",
     },
     {
         id: 7,
@@ -84,6 +87,7 @@ const tourListData = [
         date: "February 14, 2025",
         price: 220,
         rating: 4.9,
+        link: "banff-national-park",
     },
     {
         id: 8,
@@ -94,6 +98,7 @@ const tourListData = [
         date: "March 3, 2025",
         price: 150,
         rating: 4.7,
+        link: "mount-fuji",
     },
     {
         id: 9,
@@ -104,6 +109,7 @@ const tourListData = [
         date: "April 18, 2025",
         price: 175,
         rating: 4.4,
+        link: "sahara-desert",
     },
     {
         id: 10,
@@ -114,6 +120,7 @@ const tourListData = [
         date: "May 9, 2025",
         price: 400,
         rating: 4.9,
+        link: "swiss-alps",
     },
     {
         id: 11,
@@ -124,6 +131,7 @@ const tourListData = [
         date: "June 20, 2025",
         price: 320,
         rating: 4.8,
+        link: "patagonia",
     },
     {
         id: 12,
@@ -134,6 +142,7 @@ const tourListData = [
         date: "July 15, 2025",
         price: 250,
         rating: 4.6,
+        link: "victoria-falls",
     },
     {
         id: 13,
@@ -144,6 +153,7 @@ const tourListData = [
         date: "August 30, 2025",
         price: 1000,
         rating: 4.9,
+        link: "antarctica",
     },
     {
         id: 14,
@@ -154,6 +164,7 @@ const tourListData = [
         date: "September 25, 2025",
         price: 450,
         rating: 4.8,
+        link: "galapagos-islands",
     },
     {
         id: 15,
@@ -164,6 +175,7 @@ const tourListData = [
         date: "October 10, 2025",
         price: 180,
         rating: 4.5,
+        link: "great-wall",
     },
     {
         id: 16,
@@ -174,6 +186,7 @@ const tourListData = [
         date: "November 1, 2025",
         price: 380,
         rating: 4.8,
+        link: "machu-picchu",
     },
     {
         id: 17,
@@ -184,6 +197,7 @@ const tourListData = [
         date: "December 18, 2025",
         price: 300,
         rating: 4.7,
+        link: "venice-tour",
     },
     {
         id: 18,
@@ -194,6 +208,7 @@ const tourListData = [
         date: "January 8, 2026",
         price: 600,
         rating: 4.9,
+        link: "bora-bora-island",
     },
     {
         id: 19,
@@ -201,9 +216,10 @@ const tourListData = [
         days: 4,
         title: "Grand Canyon Tour",
         location: "USA",
-        date: "February 11, 2026",
+        date: "February 11, 2022026",
         price: 240,
         rating: 4.6,
+        link: "grand-canyon-tour",
     },
     {
         id: 20,
@@ -214,6 +230,7 @@ const tourListData = [
         date: "March 30, 2026",
         price: 350,
         rating: 4.8,
+        link: "nile-river-cruise",
     },
     {
         id: 21,
@@ -224,6 +241,7 @@ const tourListData = [
         date: "April 12, 2026",
         price: 280,
         rating: 4.7,
+        link: "santorini-beaches",
     },
     {
         id: 22,
@@ -234,6 +252,7 @@ const tourListData = [
         date: "May 6, 2026",
         price: 140,
         rating: 4.5,
+        link: "taj-mahal-tour",
     },
     {
         id: 23,
@@ -244,6 +263,7 @@ const tourListData = [
         date: "June 15, 2026",
         price: 200,
         rating: 4.6,
+        link: "blue-lagoon-spa",
     },
     {
         id: 24,
@@ -254,6 +274,7 @@ const tourListData = [
         date: "July 25, 2026",
         price: 420,
         rating: 4.9,
+        link: "serengeti-safari",
     },
     {
         id: 25,
@@ -264,22 +285,21 @@ const tourListData = [
         date: "August 19, 2026",
         price: 340,
         rating: 4.7,
+        link: "amalfi-coast",
     },
 ];
 
 const OurTour = () => {
-    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const itemsPerPage = 12; // Số thẻ trên mỗi trang
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
+    const pathname = usePathname();
+    const [_, locale] = pathname.split("/");
+    const { paginatedItems: currentTours, totalPages } = paginate(
+        tourListData,
+        currentPage,
+        itemsPerPage
+    );
 
-    // Tính toán danh sách hiển thị
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentTours = tourListData.slice(indexOfFirstItem, indexOfLastItem);
-
-    // Tổng số trang
-    const totalPages = Math.ceil(tourListData.length / itemsPerPage);
-
-    // Hàm chuyển trang
     const handlePageChange = (pageNumber: any) => {
         setCurrentPage(pageNumber);
     };
@@ -288,67 +308,27 @@ const OurTour = () => {
         <main className="size-full flex flex-col">
             <Banner bgImage={bgImg} title="Our Tour" />
             <div className="flex flex-col gap-y-20 p-10 lg:p-16 xl:p-24 size-full">
-                <div className="grid md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 w-full gap-5 lg:gap-10">
+                <div className="grid md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 w-full gap-5">
                     {currentTours.map((tour) => (
-                        <Link key={tour.id} href={"/"}>
-                            <TourCard
-                                key={tour.id}
-                                imageUrl={tour.imageUrl}
-                                days={tour.days}
-                                title={tour.title}
-                                location={tour.location}
-                                date={tour.date}
-                                price={tour.price}
-                                rating={tour.rating}
-                            />
-                        </Link>
+                        <TourCard
+                            key={tour.id}
+                            imageUrl={tour.imageUrl}
+                            days={tour.days}
+                            title={tour.title}
+                            location={tour.location}
+                            date={tour.date}
+                            price={tour.price}
+                            rating={tour.rating}
+                            link={`/${locale}/our-tour/${tour.link}`}
+                        />
                     ))}
                 </div>
 
-                {/* Phân trang */}
-                <div className="flex justify-center items-center mt-8">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={() =>
-                                        handlePageChange(currentPage - 1)
-                                    }
-                                    className={`cursor-pointer hover:text-primary hover:bg-primary/20 ${
-                                        currentPage === 1
-                                            ? "opacity-50 pointer-events-none"
-                                            : ""
-                                    }`}
-                                />
-                            </PaginationItem>
-                            {Array.from({ length: totalPages }, (_, index) => (
-                                <PaginationItem key={index}>
-                                    <PaginationLink
-                                        onClick={() =>
-                                            handlePageChange(index + 1)
-                                        }
-                                        isActive={currentPage === index + 1}
-                                        className="cursor-pointer hover:text-primary hover:bg-primary/20"
-                                    >
-                                        {index + 1}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            ))}
-                            <PaginationItem>
-                                <PaginationNext
-                                    onClick={() =>
-                                        handlePageChange(currentPage + 1)
-                                    }
-                                    className={`cursor-pointer hover:text-primary hover:bg-primary/20 ${
-                                        currentPage === totalPages
-                                            ? "opacity-50 pointer-events-none"
-                                            : ""
-                                    }`}
-                                />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </div>
+                <PaginationCustom
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                />
             </div>
             <ClientLogos />
         </main>

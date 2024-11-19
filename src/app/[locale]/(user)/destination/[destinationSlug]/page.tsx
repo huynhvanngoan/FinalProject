@@ -7,18 +7,11 @@ import FeatureCard from "@/components/homeComponents/FeatureCard";
 import InfoPackage from "@/components/shared/InfoPackage";
 import AboutDetails from "@/components/destinationComponents/AboutDetails";
 import TourPackages from "@/components/destinationComponents/TourPackages";
-
-const capitalizeTitle = (str: string) => {
-    return str
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-};
+import getCapitalizedTitleFromPath from "@/utils/helpers";
 
 const DestinationDetails = () => {
     const pathname = usePathname();
-    const slug = pathname?.split("/").pop() || "";
-    const title = capitalizeTitle(slug.replace(/-/g, " "));
+    const title = getCapitalizedTitleFromPath(pathname);
     const infoData = {
         packages: 5,
         contact: "+987 654 3210",

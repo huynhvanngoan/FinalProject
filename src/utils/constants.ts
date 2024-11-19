@@ -17,7 +17,7 @@ export const navbarItems = [
     {
         title: "home",
         url: "/",
-        icon: "mdi:home", // Nhà
+        icon: "mdi:home",
     },
     {
         title: "about-us",
