@@ -1,56 +1,59 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { isServer } from "@/utils/env";
 
-// Loại bỏ 'cache' từ RequestInit để tránh xung đột
-type RequestInitWithoutCache = Omit<RequestInit, "cache">;
+// Types & Interfaces
+type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+// type JSONValue =
+//     | string
+//     | number
+//     | boolean
+//     | null
+//     | JSONValue[]
+//     | { [key: string]: JSONValue };
 
-// Custom options với cache boolean
-interface CustomOptions extends RequestInitWithoutCache {
+interface BaseRequestConfig
+    extends Omit<RequestInit, "cache" | "method" | "body"> {
     baseUrl?: string;
     params?: Record<string, string>;
-    useCache?: boolean; // Đổi tên từ cache thành useCache
+    useCache?: boolean;
     cacheTime?: number;
     retry?: number;
     retryDelay?: number;
     showProgress?: boolean;
 }
 
-interface RequestConfig extends CustomOptions {
+interface RequestConfig<T = unknown> extends BaseRequestConfig {
     url: string;
-    method: string;
+    method: HTTPMethod;
+    body?: T;
 }
 
-type InterceptorFn = (
-    config: RequestConfig
-) => Promise<RequestConfig> | RequestConfig;
-type ResponseInterceptorFn = (response: any) => Promise<any> | any;
-type ErrorInterceptorFn = (error: any) => Promise<any> | any;
+type InterceptorFn<T> = (config: T) => Promise<T> | T;
 
+// Error Classes
 class HttpError extends Error {
-    status: number;
-    payload: any;
-
-    constructor({ status, payload }: { status: number; payload: any }) {
-        super(`HTTP Error: ${status}`);
-        this.status = status;
-        this.payload = payload;
+    constructor(
+        public status: number,
+        public payload: unknown,
+        message?: string
+    ) {
+        super(message ?? `HTTP Error: ${status}`);
+        this.name = "HttpError";
     }
 }
 
+// Cache Implementation
 class RequestCache {
-    private cache: Map<string, { data: any; timestamp: number }>;
+    private cache = new Map<string, { data: unknown; timestamp: number }>();
 
-    constructor() {
-        this.cache = new Map();
-    }
-
-    set(key: string, data: any, cacheTime: number) {
+    set(key: string, data: unknown, cacheTime: number): void {
         this.cache.set(key, {
             data,
             timestamp: Date.now() + cacheTime,
         });
     }
 
-    get(key: string): any | null {
+    get(key: string): unknown | null {
         const item = this.cache.get(key);
         if (!item) return null;
 
@@ -62,37 +65,63 @@ class RequestCache {
         return item.data;
     }
 
-    clear() {
+    clear(): void {
         this.cache.clear();
     }
 }
 
-let nprogress: any;
-if (typeof window !== "undefined") {
-    import("nprogress").then((module) => {
-        nprogress = module.default;
-        nprogress.configure({ showSpinner: false });
-    });
-}
+// Progress Bar Implementation
+class ProgressBar {
+    private static instance: ProgressBar;
+    private nprogress: any;
+    private count = 0;
 
-class HttpClient {
-    private baseUrl: string;
-    private requestInterceptors: InterceptorFn[];
-    private responseInterceptors: ResponseInterceptorFn[];
-    private errorInterceptors: ErrorInterceptorFn[];
-    private cache: RequestCache;
-    private activeRequests: number;
-
-    constructor(baseUrl: string = "") {
-        this.baseUrl = baseUrl;
-        this.requestInterceptors = [];
-        this.responseInterceptors = [];
-        this.errorInterceptors = [];
-        this.cache = new RequestCache();
-        this.activeRequests = 0;
+    private constructor() {
+        if (!isServer) {
+            import("nprogress").then((module) => {
+                this.nprogress = module.default;
+                this.nprogress.configure({ showSpinner: false });
+            });
+        }
     }
 
-    addRequestInterceptor(interceptor: InterceptorFn) {
+    static getInstance(): ProgressBar {
+        if (!ProgressBar.instance) {
+            ProgressBar.instance = new ProgressBar();
+        }
+        return ProgressBar.instance;
+    }
+
+    show(): void {
+        if (isServer || !this.nprogress) return;
+        this.count++;
+        this.nprogress.start();
+    }
+
+    hide(): void {
+        if (isServer || !this.nprogress) return;
+        this.count--;
+        if (this.count <= 0) {
+            this.count = 0;
+            this.nprogress.done();
+        }
+    }
+}
+
+// Main HTTP Client
+class HttpClient {
+    private readonly requestInterceptors: Array<InterceptorFn<RequestConfig>> =
+        [];
+    private readonly responseInterceptors: Array<InterceptorFn<unknown>> = [];
+    private readonly errorInterceptors: Array<InterceptorFn<unknown>> = [];
+    private readonly cache = new RequestCache();
+    private readonly progress = ProgressBar.getInstance();
+
+    constructor(private readonly baseUrl: string = "") {}
+
+    addRequestInterceptor(
+        interceptor: InterceptorFn<RequestConfig>
+    ): () => void {
         this.requestInterceptors.push(interceptor);
         return () => {
             const index = this.requestInterceptors.indexOf(interceptor);
@@ -100,7 +129,7 @@ class HttpClient {
         };
     }
 
-    addResponseInterceptor(interceptor: ResponseInterceptorFn) {
+    addResponseInterceptor(interceptor: InterceptorFn<unknown>): () => void {
         this.responseInterceptors.push(interceptor);
         return () => {
             const index = this.responseInterceptors.indexOf(interceptor);
@@ -108,7 +137,7 @@ class HttpClient {
         };
     }
 
-    addErrorInterceptor(interceptor: ErrorInterceptorFn) {
+    addErrorInterceptor(interceptor: InterceptorFn<unknown>): () => void {
         this.errorInterceptors.push(interceptor);
         return () => {
             const index = this.errorInterceptors.indexOf(interceptor);
@@ -116,217 +145,196 @@ class HttpClient {
         };
     }
 
-    private async runRequestInterceptors(
-        config: RequestConfig
-    ): Promise<RequestConfig> {
-        let interceptedConfig = { ...config };
-        for (const interceptor of this.requestInterceptors) {
-            interceptedConfig = await interceptor(interceptedConfig);
+    private async runInterceptors<T>(
+        value: T,
+        interceptors: Array<InterceptorFn<T>>
+    ): Promise<T> {
+        let result = value;
+        for (const interceptor of interceptors) {
+            result = await interceptor(result);
         }
-        return interceptedConfig;
-    }
-
-    private async runResponseInterceptors(response: any): Promise<any> {
-        let interceptedResponse = response;
-        for (const interceptor of this.responseInterceptors) {
-            interceptedResponse = await interceptor(interceptedResponse);
-        }
-        return interceptedResponse;
-    }
-
-    private async runErrorInterceptors(error: any): Promise<any> {
-        let interceptedError = error;
-        for (const interceptor of this.errorInterceptors) {
-            interceptedError = await interceptor(interceptedError);
-        }
-        return interceptedError;
-    }
-
-    private updateProgress(show: boolean) {
-        if (typeof window === "undefined" || !nprogress) return;
-
-        if (show) {
-            this.activeRequests++;
-            nprogress.start();
-        } else {
-            this.activeRequests--;
-            if (this.activeRequests <= 0) {
-                this.activeRequests = 0;
-                nprogress.done();
-            }
-        }
+        return result;
     }
 
     private getCacheKey(config: RequestConfig): string {
-        return `${config.method}-${config.url}-${JSON.stringify(
-            config.params
-        )}-${JSON.stringify(config.body)}`;
+        const { method, url, params, body } = config;
+        return `${method}-${url}-${JSON.stringify(params)}-${JSON.stringify(
+            body
+        )}`;
     }
 
-    private async request(config: RequestConfig, retryCount = 0): Promise<any> {
+    private createUrl(url: string, params?: Record<string, string>): string {
+        const baseUrl = url.startsWith("http") ? "" : this.baseUrl;
+        const queryString = params ? `?${new URLSearchParams(params)}` : "";
+        return `${baseUrl}${url}${queryString}`;
+    }
+
+    private async parseResponse(response: Response): Promise<unknown> {
+        const contentType = response.headers.get("content-type");
+        if (contentType?.includes("application/json")) {
+            return response.json();
+        }
+        return response.text();
+    }
+
+    private async handleRequest<T>(
+        config: RequestConfig<T>,
+        retryCount = 0
+    ): Promise<unknown> {
         try {
             // Run request interceptors
-            config = await this.runRequestInterceptors(config);
+            const interceptedConfig = await this.runInterceptors(
+                config,
+                this.requestInterceptors
+            );
 
             // Check cache
-            if (config.useCache) {
-                const cacheKey = this.getCacheKey(config);
+            if (interceptedConfig.useCache) {
+                const cacheKey = this.getCacheKey(interceptedConfig);
                 const cachedData = this.cache.get(cacheKey);
                 if (cachedData) return cachedData;
             }
 
-            // Show progress if enabled
-            if (config.showProgress) {
-                this.updateProgress(true);
+            // Show progress
+            if (interceptedConfig.showProgress) {
+                this.progress.show();
             }
 
-            // Process query params
-            const queryParams = config.params
-                ? "?" + new URLSearchParams(config.params).toString()
-                : "";
-
-            // Build full URL
-            const fullUrl = `${config.baseUrl || this.baseUrl}${
-                config.url
-            }${queryParams}`;
-
-            // Prepare headers
-            const baseHeaders = {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            };
+            // Prepare request
+            const url = this.createUrl(
+                interceptedConfig.url,
+                interceptedConfig.params
+            );
             const {
                 method,
                 body,
-                useCache,
-                cacheTime,
-                headers,
-                ...remainingOptions
-            } = config;
+                headers = {},
+                ...options
+            } = interceptedConfig;
 
-            // Prepare request options
-            const requestOptions: RequestInit = {
+            const response = await fetch(url, {
                 method,
-                ...remainingOptions,
                 headers: {
-                    ...baseHeaders,
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
                     ...headers,
                 },
-            };
+                body: body ? JSON.stringify(body) : undefined,
+                ...options,
+            });
 
-            // Convert body to JSON if needed
-            if (body && typeof body === "object") {
-                requestOptions.body = JSON.stringify(body);
-            }
-
-            // Make the request
-            const response = await fetch(fullUrl, requestOptions);
-
-            // Parse response
-            const contentType = response.headers.get("content-type");
-            let data;
-
-            if (contentType?.includes("application/json")) {
-                data = await response.json();
-            } else {
-                data = await response.text();
-            }
+            const data = await this.parseResponse(response);
 
             if (!response.ok) {
-                throw new HttpError({
-                    status: response.status,
-                    payload: data,
-                });
+                throw new HttpError(response.status, data);
             }
 
             // Run response interceptors
-            data = await this.runResponseInterceptors(data);
+            const interceptedData = await this.runInterceptors(
+                data,
+                this.responseInterceptors
+            );
 
-            // Cache the response if enabled
-            if (useCache) {
-                const cacheKey = this.getCacheKey(config);
-                this.cache.set(cacheKey, data, cacheTime || 5 * 60 * 1000); // Default 5 minutes
+            // Cache response
+            if (interceptedConfig.useCache) {
+                const cacheKey = this.getCacheKey(interceptedConfig);
+                this.cache.set(
+                    cacheKey,
+                    interceptedData,
+                    interceptedConfig.cacheTime ?? 5 * 60 * 1000
+                );
             }
 
-            return data;
+            return interceptedData;
         } catch (error) {
             // Run error interceptors
-            error = await this.runErrorInterceptors(error);
+            const interceptedError = await this.runInterceptors(
+                error,
+                this.errorInterceptors
+            );
 
             // Retry logic
-            if (retryCount < (config.retry || 0)) {
+            if (retryCount < (config.retry ?? 0)) {
                 await new Promise((resolve) =>
-                    setTimeout(resolve, config.retryDelay || 1000)
+                    setTimeout(resolve, config.retryDelay ?? 1000)
                 );
-                return this.request(config, retryCount + 1);
+                return this.handleRequest(config, retryCount + 1);
             }
 
-            throw error;
+            throw interceptedError;
         } finally {
             if (config.showProgress) {
-                this.updateProgress(false);
+                this.progress.hide();
             }
         }
     }
 
-    // Helper methods với type mới
-    async get<T>(
+    // Public API methods
+    async get<T = unknown>(
         url: string,
-        options?: Omit<CustomOptions, "body">
+        options?: Omit<BaseRequestConfig, "body">
     ): Promise<T> {
-        return this.request({
+        return this.handleRequest({
             method: "GET",
             url,
             ...options,
-        });
+        }) as Promise<T>;
     }
 
-    async post<T>(
+    async post<T = unknown, D = unknown>(
         url: string,
-        data?: any,
-        options?: CustomOptions
+        data?: D,
+        options?: BaseRequestConfig
     ): Promise<T> {
-        return this.request({
+        return this.handleRequest({
             method: "POST",
             url,
             body: data,
             ...options,
-        });
+        }) as Promise<T>;
     }
 
-    async put<T>(url: string, data?: any, options?: CustomOptions): Promise<T> {
-        return this.request({
+    async put<T = unknown, D = unknown>(
+        url: string,
+        data?: D,
+        options?: BaseRequestConfig
+    ): Promise<T> {
+        return this.handleRequest({
             method: "PUT",
             url,
             body: data,
             ...options,
-        });
+        }) as Promise<T>;
     }
 
-    async delete<T>(url: string, options?: CustomOptions): Promise<T> {
-        return this.request({
+    async delete<T = unknown>(
+        url: string,
+        options?: BaseRequestConfig
+    ): Promise<T> {
+        return this.handleRequest({
             method: "DELETE",
             url,
             ...options,
-        });
+        }) as Promise<T>;
     }
 
-    async patch<T>(
+    async patch<T = unknown, D = unknown>(
         url: string,
-        data?: any,
-        options?: CustomOptions
+        data?: D,
+        options?: BaseRequestConfig
     ): Promise<T> {
-        return this.request({
+        return this.handleRequest({
             method: "PATCH",
             url,
             body: data,
             ...options,
-        });
+        }) as Promise<T>;
     }
 }
 
-// Tạo instance mặc định
+// Default instance
 const api = new HttpClient(process.env.NEXT_PUBLIC_API_URL);
 
-export { HttpClient, HttpError, type CustomOptions, type RequestConfig };
+export type { BaseRequestConfig, RequestConfig, HTTPMethod };
+export { HttpClient, HttpError };
 export default api;

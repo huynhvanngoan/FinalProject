@@ -44,20 +44,20 @@ interface InfoPackageProps {
 
 const InfoPackage: React.FC<InfoPackageProps> = ({ infoData }) => {
     return (
-        <div className="w-full px-64 py-12 grid grid-cols-3 place-items-center gap-5">
+        <div className="w-full xl:px-64 py-12 md:grid  md:grid-cols-3 md:place-items-center flex sm:flex-row flex-col justify-start items-start gap-5">
             {infoItems.map((info) => (
                 <div
                     key={info.id}
                     className="w-full border-r-2 border-secondary flex-center flex-row gap-[30px]"
                 >
                     <div className="p-4 bg-primary/30 text-primary rounded-full">
-                        <Icon icon={info.icon} width="48" height="48" />
+                        <Icon icon={info.icon} width="26" height="26" />
                     </div>
                     <div className="flex flex-col gap-2">
                         <p className="text-lg text-secondary-foreground/60">
                             {info.title}
                         </p>
-                        <p className="text-2xl font-medium">
+                        <p className="text-lg font-medium">
                             {info.description(infoData)}
                         </p>
                     </div>

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import AppHeader from "../shared/AppHeader";
 import TourCard from "../shared/TourCard";
 import NextPrevButton from "../shared/NextPrevButton";
@@ -51,26 +52,70 @@ const tourListData = [
         rating: 4.9,
         link: "great-barrier-reef",
     },
+    {
+        id: 4,
+        imageUrl: "/images/sok-national-park.jpg",
+        days: 10,
+        title: "Great Barrier Reef",
+        location: "Australia",
+        date: "November 25, 2024",
+        price: 300,
+        rating: 4.9,
+        link: "great-barrier-reef",
+    },
 ];
+
+const ITEMS_PER_PAGE = 4; // Number of items to show per page
 
 const TourPackages = () => {
     const pathname = usePathname();
+    const [currentPage, setCurrentPage] = useState(0);
 
     const [locale, ...rest] = pathname.split("/");
+    const slug = rest.join("/");
 
-   
-    const slug = rest.join("/"); 
+    // Calculate total number of pages
+    const totalPages = Math.ceil(tourListData.length / ITEMS_PER_PAGE);
 
-   
+    // Get current page items
+    const getCurrentPageItems = () => {
+        const start = currentPage * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        return tourListData.slice(start, end);
+    };
+
+    // Handle navigation
+    const handleNext = () => {
+        if (currentPage < totalPages - 1) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentPage > 0) {
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
+
+    // Check if we can navigate
+    const canNext = currentPage < totalPages - 1;
+    const canPrev = currentPage > 0;
 
     return (
         <section className="flex flex-col gap-14">
             <div className="flex flex-row justify-between">
                 <AppHeader text="Destination Tour Packages" />
-                <NextPrevButton canNext={true} canPrev={false} />
+                <div className="hidden sm:block">
+                    <NextPrevButton
+                        canNext={canNext}
+                        canPrev={canPrev}
+                        onNext={handleNext}
+                        onPrev={handlePrev}
+                    />
+                </div>
             </div>
             <div className="grid md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 w-full gap-5 lg:gap-10">
-                {tourListData.map((tour) => (
+                {getCurrentPageItems().map((tour) => (
                     <TourCard
                         key={tour.id}
                         imageUrl={tour.imageUrl}
@@ -80,9 +125,17 @@ const TourPackages = () => {
                         date={tour.date}
                         price={tour.price}
                         rating={tour.rating}
-                        link={`/${locale}/${slug}/${tour.link}`} 
+                        link={`/${slug}/${tour.link}`}
                     />
                 ))}
+            </div>
+            <div className="mx-auto block sm:hidden">
+                <NextPrevButton
+                    canNext={canNext}
+                    canPrev={canPrev}
+                    onNext={handleNext}
+                    onPrev={handlePrev}
+                />
             </div>
         </section>
     );

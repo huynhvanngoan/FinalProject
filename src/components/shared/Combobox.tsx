@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -72,7 +73,7 @@ const ComboboxForm: React.FC<ComboboxFormProps> = ({
                                         "hover:text-primary hover:border-primary"
                                     )}
                                 >
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 overflow-hidden text-">
                                         <Icon
                                             icon="iconamoon:location-light"
                                             width="48"

@@ -40,12 +40,12 @@ const TourCard: React.FC<TourCardProps> = ({
                     </div>
 
                     {/* Days Badge */}
-                    <div className="absolute top-2 right-2 bg-gray-800 text-white text-xs px-2 py-1 rounded-full group-hover:hidden">
+                    <div className="absolute top-2 right-2 bg-gray-800 text-primary text-xs px-2 py-1 rounded-full group-hover:hidden">
                         {days} Days
                     </div>
 
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 flex flex-col items-center justify-center text-white text-sm font-semibold group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 flex flex-col items-center justify-center text-primary text-sm font-semibold group-hover:opacity-100 transition-opacity duration-300">
                         <Icon icon="mdi:eye" className="mb-2" width={30} />
                         View Details
                     </div>
@@ -54,7 +54,7 @@ const TourCard: React.FC<TourCardProps> = ({
                 {/* Content Section */}
                 <div className="p-4">
                     <div className="flex justify-between items-center mb-1">
-                        <h3 className="text-lg font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+                        <h3 className="text-lg text-primary font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
                             {title}
                         </h3>
 

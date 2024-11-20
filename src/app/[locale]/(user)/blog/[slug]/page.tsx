@@ -11,6 +11,7 @@ import NextPrevButton from "@/components/shared/NextPrevButton";
 import Demo from "@/public/chile.jpg";
 import BlogCard from "@/components/shared/BlogCard";
 import { usePathname } from "next/navigation";
+import { usePagination } from "@/hooks/usePagination";
 
 const blogListData = [
     {
@@ -137,27 +138,12 @@ const blogListData = [
 const BlogDetails = () => {
     const pathname = usePathname();
     const [_, locale] = pathname.split("/");
-    const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 4;
+    const { currentData, handleNext, handlePrev, isFirstPage, isLastPage } =
+    usePagination({
+        data: blogListData,
+        itemsPerPage: 3, // Changed to 3 to match grid-cols-3 for large screens
+    });
 
-    // Calculate the current page data
-    const currentData = blogListData.slice(
-        currentPage * itemsPerPage,
-        (currentPage + 1) * itemsPerPage
-    );
-
-    // Handle pagination
-    const handleNext = () => {
-        if ((currentPage + 1) * itemsPerPage < blogListData.length) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const handlePrev = () => {
-        if (currentPage > 0) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
     return (
         <main className="size-full flex flex-col">
             <Banner bgImage={bgImg} title="Blog Details" />
@@ -167,13 +153,13 @@ const BlogDetails = () => {
                         <h1 className="text-[54px] font-semibold">
                             Journey Beyond Borders
                         </h1>
-                        <div className="flex flex-row gap-6">
+                        <div className="flex flex-col xs:flex-row gap-6">
                             <p>Entrepreneur, Leadership</p>
-                            <div className="flex-center flex-row gap-2">
+                            <div className="xs:flex-center flex items-center flex-row gap-2">
                                 <Icon icon="mage:clock" />
                                 <p>August 07, 2024</p>
                             </div>{" "}
-                            <div className="flex-center flex-row gap-2">
+                            <div className="xs:flex-center flex items-center flex-row gap-2">
                                 <Icon icon="lucide:dot" />
                                 <p>Admin</p>
                             </div>
@@ -199,7 +185,7 @@ const BlogDetails = () => {
                         your travel experience to new heights, creating memories
                         that will last a lifetime.
                     </p>
-                    <div className="flex-center flex-row gap-5 h-[450px]">
+                    <div className="flex-center flex-col xxl:flex-row w-full xxl:h-[450px] gap-5 ">
                         <Image
                             src={bgImg}
                             alt=""
@@ -237,14 +223,11 @@ const BlogDetails = () => {
                     <div className="flex flex-row justify-between items-center">
                         <AppHeader text="Recent Travel Blog" />
                         <NextPrevButton
-                            canNext={
-                                (currentPage + 1) * itemsPerPage <
-                                blogListData.length
-                            }
-                            canPrev={currentPage > 0}
-                            onNext={handleNext}
-                            onPrev={handlePrev}
-                        />
+                        onNext={handleNext}
+                        onPrev={handlePrev}
+                        canNext={!isLastPage}
+                        canPrev={!isFirstPage}
+                    />
                     </div>
                     <div className="grid md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 w-full gap-5">
                         {currentData.map((blog) => (

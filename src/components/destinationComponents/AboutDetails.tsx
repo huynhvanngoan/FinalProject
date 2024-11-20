@@ -44,8 +44,8 @@ interface AboutDetailsProps {
 
 const AboutDetails: React.FC<AboutDetailsProps> = ({ progressData }) => {
     return (
-        <section className="size-full flex-center flex-row gap-[65px]">
-            <div className="w-1/2">
+        <section className="size-full flex-center flex-col sm:flex-row gap-[65px]">
+            <div className="sm:w-1/2 w-full">
                 <HighlightTitle
                     text="Perfect Travel Spot"
                     className="text-foreground"
@@ -65,14 +65,14 @@ const AboutDetails: React.FC<AboutDetailsProps> = ({ progressData }) => {
                     Contact Us
                 </Button>
             </div>
-            <div className="w-1/3 h-[482px]">
+            <div className="md:w-1/3 w-full h-[482px]">
                 <Image
                     src={Demo}
                     alt="Travel Destination"
                     className="size-full object-cover rounded-lg shadow-md hover:shadow-gray-500 transition-all duration-300 ease-in-out hover:scale-[1.02]"
                 />
             </div>
-            <div className="w-1/3 flex flex-col gap-10">
+            <div className="md:w-1/3 flex flex-col gap-10">
                 {aboutDetails.map((detail) => (
                     <div key={detail.id} className="flex flex-col gap-2">
                         <div className="text-primary">

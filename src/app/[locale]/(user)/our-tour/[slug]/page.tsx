@@ -7,12 +7,16 @@ import getCapitalizedTitleFromPath from "@/utils/helpers";
 import TourHeader from "@/components/tourComponents/TourHeader";
 import InfoSection from "@/components/tourComponents/TourInforSection";
 import ItinerarySection from "@/components/tourComponents/ItinerarySection";
-// import ImageCard from "@/components/tourComponents/ImageCard";
-// import Demo from "@/public/chile.jpg";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Autoplay, Scrollbar } from "swiper/modules";
+import ImageCard from "@/components/tourComponents/ImageCard";
+import Demo from "@/public/chile.jpg";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Scrollbar } from "swiper/modules";
 import BookForm from "@/components/tourComponents/BookForm";
 import Map from "@/components/shared/Map";
+import "swiper/css";
+import "swiper/css/grid";
+import "swiper/css/pagination";
+
 const itineraryData = [
     {
         day: 1,
@@ -38,58 +42,58 @@ const itineraryData = [
     },
 ];
 
-// const listImage = [
-//     {
-//         imageUrl: Demo,
-//         title: "Image 1",
-//         description: "Description of image 1",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 2",
-//         description: "Description of image 2",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 3",
-//         description: "Description of image 3",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 4",
-//         description: "Description of image 4",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 5",
-//         description: "Description of image 5",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 6",
-//         description: "Description of image 6",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 7",
-//         description: "Description of image 7",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 8",
-//         description: "Description of image 8",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 9",
-//         description: "Description of image 9",
-//     },
-//     {
-//         imageUrl: Demo,
-//         title: "Image 10",
-//         description: "Description of image 10",
-//     },
-// ];
+const listImage = [
+    {
+        imageUrl: Demo,
+        title: "Image 1",
+        description: "Description of image 1",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 2",
+        description: "Description of image 2",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 3",
+        description: "Description of image 3",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 4",
+        description: "Description of image 4",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 5",
+        description: "Description of image 5",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 6",
+        description: "Description of image 6",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 7",
+        description: "Description of image 7",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 8",
+        description: "Description of image 8",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 9",
+        description: "Description of image 9",
+    },
+    {
+        imageUrl: Demo,
+        title: "Image 10",
+        description: "Description of image 10",
+    },
+];
 
 const TourDetails = () => {
     const pathname = usePathname();
@@ -153,7 +157,7 @@ const TourDetails = () => {
         <main className="flex flex-col w-full">
             <Banner bgImage={bgImg} title={title} />
             <section className="flex p-10 lg:p-16 xl:p-24 gap-10">
-                <div className="w-3/4">
+                <div className="md:w-3/4 w-full">
                     <TourHeader
                         title={title}
                         price={88}
@@ -199,36 +203,61 @@ const TourDetails = () => {
                         ]}
                     />
                     <ItinerarySection itineraryData={itineraryData} />
+                    <div className="block md:hidden w-full space-y-12">
+                        <BookForm />
+                        <Map location={title} />
+                    </div>
                 </div>
-                <aside className="w-1/3 space-y-12">
+                <aside className="hidden md:block w-1/3 space-y-12">
                     <BookForm />
-                    <Map location={title} />
+                    <div className="w-full h-[558px]">
+                        <Map location={title} />
+                    </div>
                 </aside>
             </section>
-            {/* <div className="flex flex-row">
+            <div className="mb-8">
                 <Swiper
-                    spaceBetween={30}
-                    centeredSlides={true}
+                    slidesPerView={6}
+                    // spaceBetween={5}
                     autoplay={{
-                        delay: 2500,
+                        delay: 3000,
                         disableOnInteraction: false,
-                    }}
-                    scrollbar={{
-                        hide: true,
                     }}
                     pagination={{
                         clickable: true,
+                        dynamicBullets: true,
                     }}
-                    modules={[Autoplay, Scrollbar]}
-                    className="flex flex-row w-full h-72 border-2 border-secondary rounded-md "
+                    navigation={true}
+                    modules={[Autoplay, Scrollbar, Navigation]}
+                    className="w-full h-72"
+                    breakpoints={{
+                        // when window width is >= 320px
+                        320: {
+                            slidesPerView: 4,
+                            spaceBetween: 5,
+                        },
+                        // when window width is >= 640px
+                        640: {
+                            slidesPerView: 5,
+                            spaceBetween: 5,
+                        },
+                        // when window width is >= 1024px
+                        1024: {
+                            slidesPerView: 6,
+                            spaceBetween: 5,
+                        },
+                    }}
                 >
                     {listImage.map((image, index) => (
-                        <SwiperSlide key={index}>
+                        <SwiperSlide
+                            key={index}
+                            className="rounded-lg overflow-hidden"
+                        >
                             <ImageCard backgroundImage={image.imageUrl} />
                         </SwiperSlide>
                     ))}
                 </Swiper>
-            </div> */}
+            </div>
         </main>
     );
 };

@@ -12,6 +12,7 @@ const tourListData = [
         date: "August 7, 2024",
         price: 88,
         rating: 4.4,
+        link:"sok-national-park"
     },
     {
         id: 2,
@@ -22,6 +23,7 @@ const tourListData = [
         date: "September 12, 2024",
         price: 120,
         rating: 4.7,
+        link:"phang-nga-bay"
     },
     {
         id: 3,
@@ -32,6 +34,7 @@ const tourListData = [
         date: "October 15, 2024",
         price: 200,
         rating: 4.8,
+        link:"yosemite-national-park"
     },
     {
         id: 4,
@@ -42,6 +45,7 @@ const tourListData = [
         date: "November 25, 2024",
         price: 300,
         rating: 4.9,
+        link:"great-barrier-reef"
     },
 ];
 
@@ -60,6 +64,7 @@ const MostPopularTour = () => {
                         date={tour.date}
                         price={tour.price}
                         rating={tour.rating}
+                        link={tour.link}
                     />
                 ))}
             </div>

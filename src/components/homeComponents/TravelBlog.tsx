@@ -1,9 +1,11 @@
+"use client";
 import React from "react";
 import BlogCard from "../shared/BlogCard";
 import NextPrevButton from "../shared/NextPrevButton";
 import AppHeader from "../shared/AppHeader";
 import HighlightTitle from "../shared/HighlightTitle";
 import Demo from "@/public/chile.jpg";
+import { usePagination } from "@/hooks/usePagination";
 const blogData = [
     {
         title: "French Alps",
@@ -29,8 +31,30 @@ const blogData = [
         imageSrc: Demo,
         link: "/blog/cultural-wonders",
     },
+    {
+        title: "Cultural Wonders",
+        description: "Immerse yourself in the world's cultural treasures",
+        readTime: "6 mins",
+        // imageSrc: "/french-alps.jpg",
+        imageSrc: Demo,
+        link: "/blog/cultural-wonders",
+    },
+    {
+        title: "Cultural Wonders",
+        description: "Immerse yourself in the world's cultural treasures",
+        readTime: "6 mins",
+        // imageSrc: "/french-alps.jpg",
+        imageSrc: Demo,
+        link: "/blog/cultural-wonders",
+    },
 ];
 const TravelBlog = () => {
+    const { currentData, handleNext, handlePrev, isFirstPage, isLastPage } =
+        usePagination({
+            data: blogData,
+            itemsPerPage: 3, // Changed to 3 to match grid-cols-3 for large screens
+        });
+
     return (
         <section className="w-full flex flex-col gap-5">
             <div className="flex flex-row justify-between items-center">
@@ -41,16 +65,18 @@ const TravelBlog = () => {
                     />
                     <AppHeader text="Latest Travel Blog" />
                 </div>
-                <NextPrevButton
-                    canPrev={false}
-                    canNext={true}
-                    // onPrev={() => console.log("Go to previous")}
-                    // onNext={() => console.log("Go to next")}
-                />
+                <div className="hidden sm:block">
+                    <NextPrevButton
+                        onNext={handleNext}
+                        onPrev={handlePrev}
+                        canNext={!isLastPage}
+                        canPrev={!isFirstPage}
+                    />
+                </div>
             </div>
             <div className="flex gap-6 p-6">
                 {/* First Card Design */}
-                {blogData.map((blog, index) => (
+                {currentData.map((blog, index) => (
                     <BlogCard
                         key={index}
                         title={blog.title}
@@ -60,6 +86,14 @@ const TravelBlog = () => {
                         link={blog.link}
                     />
                 ))}
+            </div>
+            <div className="mx-auto block sm:hidden">
+                <NextPrevButton
+                    onNext={handleNext}
+                    onPrev={handlePrev}
+                    canNext={!isLastPage}
+                    canPrev={!isFirstPage}
+                />
             </div>
         </section>
     );
