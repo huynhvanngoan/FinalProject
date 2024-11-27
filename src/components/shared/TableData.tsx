@@ -79,127 +79,107 @@ export function DataTable<TData, TValue>({
                 table={table}
             />
 
-            <div className="overflow-hidden">
-                <div className="min-w-full table-fixed">
-                    <Table>
-                        <TableHeader>
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers
-                                        .filter((header) =>
-                                            header.column.getIsVisible()
-                                        )
-                                        .map((header) => {
-                                            const isSorted =
-                                                header.column.getIsSorted();
-                                            const canSort =
-                                                header.column.getCanSort();
-                                            const isAction =
-                                                header.column.columnDef
-                                                    .header === "Actions";
-                                            const isAvatar =
-                                                header.column.columnDef
-                                                    .header === "Avatar";
+            <div className="overflow-x-auto">
+                <Table className="w-full min-w-[1200px]">
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers
+                                    .filter((header) =>
+                                        header.column.getIsVisible()
+                                    )
+                                    .map((header) => {
+                                        const isSorted =
+                                            header.column.getIsSorted();
+                                        const canSort =
+                                            header.column.getCanSort();
+                                        const isAction =
+                                            header.column.columnDef.header ===
+                                            "Actions";
+                                        const isAvatar =
+                                            header.column.columnDef.header ===
+                                            "Avatar";
 
-                                            return (
-                                                <TableHead
-                                                    key={header.id}
-                                                    style={{
-                                                        width: header.getSize(),
-                                                    }}
-                                                    className={`bg-background sticky top-0 ${
-                                                        canSort && !isAction
-                                                            ? "cursor-pointer"
-                                                            : ""
-                                                    }`}
-                                                    onClick={
-                                                        canSort && !isAction
-                                                            ? () =>
-                                                                  header.column.toggleSorting(
-                                                                      isSorted ===
-                                                                          "asc"
-                                                                  )
-                                                            : undefined
-                                                    }
-                                                >
-                                                    <div className="flex items-center justify-between">
-                                                        {(isAction ||
-                                                            isAvatar) &&
-                                                            flexRender(
-                                                                header.column
-                                                                    .columnDef
-                                                                    .header,
-                                                                header.getContext()
-                                                            )}
-                                                        {canSort &&
-                                                            !isAction &&
-                                                            !isAvatar && (
-                                                                <div className="gap-2 flex items-center justify-between">
-                                                                    {flexRender(
-                                                                        header
-                                                                            .column
-                                                                            .columnDef
-                                                                            .header,
-                                                                        header.getContext()
-                                                                    )}
-                                                                    {renderSortIcon(
-                                                                        isSorted
-                                                                    )}
-                                                                </div>
-                                                            )}
-                                                    </div>
-                                                </TableHead>
-                                            );
-                                        })}
-                                </TableRow>
-                            ))}
-                        </TableHeader>
-                    </Table>
-
-                    <div className="max-h-[600px] overflow-y-auto">
-                        <Table>
-                            <TableBody>
-                                {table.getRowModel().rows?.length ? (
-                                    table.getRowModel().rows.map((row) => (
-                                        <TableRow
-                                            key={row.id}
-                                            data-state={
-                                                row.getIsSelected() &&
-                                                "selected"
-                                            }
-                                        >
-                                            {row
-                                                .getVisibleCells()
-                                                .map((cell) => (
-                                                    <TableCell
-                                                        key={cell.id}
-                                                        style={{
-                                                            width: cell.column.getSize(),
-                                                        }}
-                                                    >
-                                                        {flexRender(
-                                                            cell.column
-                                                                .columnDef.cell,
-                                                            cell.getContext()
+                                        return (
+                                            <TableHead
+                                                key={header.id}
+                                                className={`bg-background sticky top-0 ${
+                                                    canSort && !isAction
+                                                        ? "cursor-pointer"
+                                                        : ""
+                                                }`}
+                                                onClick={
+                                                    canSort && !isAction
+                                                        ? () =>
+                                                              header.column.toggleSorting(
+                                                                  isSorted ===
+                                                                      "asc"
+                                                              )
+                                                        : undefined
+                                                }
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    {(isAction || isAvatar) &&
+                                                        flexRender(
+                                                            header.column
+                                                                .columnDef
+                                                                .header,
+                                                            header.getContext()
                                                         )}
-                                                    </TableCell>
-                                                ))}
-                                        </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell
-                                            colSpan={columns.length}
-                                            className="h-24 text-center"
-                                        >
-                                            No results.
+                                                    {canSort &&
+                                                        !isAction &&
+                                                        !isAvatar && (
+                                                            <div className="gap-2 flex items-center justify-between">
+                                                                {flexRender(
+                                                                    header
+                                                                        .column
+                                                                        .columnDef
+                                                                        .header,
+                                                                    header.getContext()
+                                                                )}
+                                                                {renderSortIcon(
+                                                                    isSorted
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                </div>
+                                            </TableHead>
+                                        );
+                                    })}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={
+                                        row.getIsSelected() && "selected"
+                                    }
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
                                         </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </div>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
 
             <TablePagination table={table} />

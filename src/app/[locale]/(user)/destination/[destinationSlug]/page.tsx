@@ -27,7 +27,7 @@ const DestinationDetails = () => {
         <main className="size-full flex flex-col">
             <Banner bgImage={bgImg} title={title} />
             <InfoPackage infoData={infoData} />
-            <div className="flex flex-col p-10 gap-28 lg:p-16 xl:p-24 size-full">
+            <div className="flex flex-col p-5 sm:p-10 gap-28 lg:p-16 xl:p-24 size-full">
                 <AboutDetails progressData={progressData} />
                 <FeatureCard />
                 <TourPackages />

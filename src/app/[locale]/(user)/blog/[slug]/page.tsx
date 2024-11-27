@@ -8,156 +8,20 @@ import Image from "next/image";
 import TestimonialCard from "@/components/blogComponents/TestimonialCard";
 import AppHeader from "@/components/shared/AppHeader";
 import NextPrevButton from "@/components/shared/NextPrevButton";
-import Demo from "@/public/chile.jpg";
 import BlogCard from "@/components/shared/BlogCard";
 import { usePathname } from "next/navigation";
+import { usePagination } from "@/hooks/usePagination";
+import { blogListData } from "@/data/blogData";
 
-const blogListData = [
-    {
-        id: 1,
-        title: "French Alps",
-        description: "Explore the beauty of the French Alps",
-        readTime: "5 mins",
-        imageSrc: Demo,
-        link: "/blog/french-alps",
-    },
-    {
-        id: 2,
-        title: "Majestic Beaches",
-        description: "Discover the most beautiful beaches in the world",
-        readTime: "8 mins",
-        imageSrc: Demo,
-        link: "/blog/beaches",
-    },
-    {
-        id: 3,
-        title: "Cultural Wonders",
-        description: "Immerse yourself in the world's cultural treasures",
-        readTime: "6 mins",
-        imageSrc: Demo,
-        link: "/blog/cultural-wonders",
-    },
-    {
-        id: 4,
-        title: "Hidden Waterfalls",
-        description: "Unveil the secrets of breathtaking hidden waterfalls",
-        readTime: "7 mins",
-        imageSrc: Demo,
-        link: "/blog/hidden-waterfalls",
-    },
-    {
-        id: 5,
-        title: "Desert Adventures",
-        description: "Experience the thrill of the world's vast deserts",
-        readTime: "9 mins",
-        imageSrc: Demo,
-        link: "/blog/desert-adventures",
-    },
-    {
-        id: 6,
-        title: "Mountain Escapes",
-        description: "Find peace in the serenity of mountain landscapes",
-        readTime: "5 mins",
-        imageSrc: Demo,
-        link: "/blog/mountain-escapes",
-    },
-    {
-        id: 7,
-        title: "Urban Exploration",
-        description: "Delve into the hidden corners of bustling cities",
-        readTime: "6 mins",
-        imageSrc: Demo,
-        link: "/blog/urban-exploration",
-    },
-    {
-        id: 8,
-        title: "Ocean Journeys",
-        description: "Sail across the world's magnificent oceans",
-        readTime: "8 mins",
-        imageSrc: Demo,
-        link: "/blog/ocean-journeys",
-    },
-    {
-        id: 9,
-        title: "Rainforest Retreats",
-        description: "Reconnect with nature in lush rainforest settings",
-        readTime: "7 mins",
-        imageSrc: Demo,
-        link: "/blog/rainforest-retreats",
-    },
-    {
-        id: 10,
-        title: "Winter Wonderlands",
-        description: "Experience the magic of snowy winter destinations",
-        readTime: "6 mins",
-        imageSrc: Demo,
-        link: "/blog/winter-wonderlands",
-    },
-    {
-        id: 11,
-        title: "Island Escapes",
-        description: "Relax on idyllic islands around the globe",
-        readTime: "5 mins",
-        imageSrc: Demo,
-        link: "/blog/island-escapes",
-    },
-    {
-        id: 12,
-        title: "Ancient Ruins",
-        description: "Step back in time with visits to ancient ruins",
-        readTime: "6 mins",
-        imageSrc: Demo,
-        link: "/blog/ancient-ruins",
-    },
-    {
-        id: 13,
-        title: "Safari Adventures",
-        description: "Get up close with wildlife on an African safari",
-        readTime: "9 mins",
-        imageSrc: Demo,
-        link: "/blog/safari-adventures",
-    },
-    {
-        id: 14,
-        title: "Festivals Around the World",
-        description: "Celebrate culture and tradition at vibrant festivals",
-        readTime: "8 mins",
-        imageSrc: Demo,
-        link: "/blog/festivals",
-    },
-    {
-        id: 15,
-        title: "Luxury Resorts",
-        description: "Indulge in opulence at the world's finest resorts",
-        readTime: "7 mins",
-        imageSrc: Demo,
-        link: "/blog/luxury-resorts",
-    },
-];
 const BlogDetails = () => {
     const pathname = usePathname();
     const [_, locale] = pathname.split("/");
-    const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 4;
+    const { currentData, handleNext, handlePrev, isFirstPage, isLastPage } =
+        usePagination({
+            data: blogListData,
+            itemsPerPage: 3, // Changed to 3 to match grid-cols-3 for large screens
+        });
 
-    // Calculate the current page data
-    const currentData = blogListData.slice(
-        currentPage * itemsPerPage,
-        (currentPage + 1) * itemsPerPage
-    );
-
-    // Handle pagination
-    const handleNext = () => {
-        if ((currentPage + 1) * itemsPerPage < blogListData.length) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const handlePrev = () => {
-        if (currentPage > 0) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
     return (
         <main className="size-full flex flex-col">
             <Banner bgImage={bgImg} title="Blog Details" />
@@ -167,13 +31,13 @@ const BlogDetails = () => {
                         <h1 className="text-[54px] font-semibold">
                             Journey Beyond Borders
                         </h1>
-                        <div className="flex flex-row gap-6">
+                        <div className="flex flex-col xs:flex-row gap-6">
                             <p>Entrepreneur, Leadership</p>
-                            <div className="flex-center flex-row gap-2">
+                            <div className="xs:flex-center flex items-center flex-row gap-2">
                                 <Icon icon="mage:clock" />
                                 <p>August 07, 2024</p>
                             </div>{" "}
-                            <div className="flex-center flex-row gap-2">
+                            <div className="xs:flex-center flex items-center flex-row gap-2">
                                 <Icon icon="lucide:dot" />
                                 <p>Admin</p>
                             </div>
@@ -199,7 +63,7 @@ const BlogDetails = () => {
                         your travel experience to new heights, creating memories
                         that will last a lifetime.
                     </p>
-                    <div className="flex-center flex-row gap-5 h-[450px]">
+                    <div className="flex-center flex-col xxl:flex-row w-full xxl:h-[450px] gap-5 ">
                         <Image
                             src={bgImg}
                             alt=""
@@ -237,13 +101,10 @@ const BlogDetails = () => {
                     <div className="flex flex-row justify-between items-center">
                         <AppHeader text="Recent Travel Blog" />
                         <NextPrevButton
-                            canNext={
-                                (currentPage + 1) * itemsPerPage <
-                                blogListData.length
-                            }
-                            canPrev={currentPage > 0}
                             onNext={handleNext}
                             onPrev={handlePrev}
+                            canNext={!isLastPage}
+                            canPrev={!isFirstPage}
                         />
                     </div>
                     <div className="grid md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 w-full gap-5">

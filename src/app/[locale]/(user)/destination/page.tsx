@@ -1,93 +1,12 @@
-"use client"
+"use client";
 import ClientLogos from "@/components/homeComponents/ClientLogos";
 import Banner from "@/components/shared/Banner";
 import React, { useState } from "react";
 import bgImg from "@/public/destination.jpg";
 import DestinationCard from "@/components/destinationComponents/DestinationCard";
 import { Button } from "@/components/ui/button";
-
-const destinations = [
-    {
-        image: "/new-zealand.jpg",
-        title: "New Zealand",
-        description: "Aoraki / Mount Cook",
-    },
-    {
-        image: "/elephant-beach.jpg",
-        title: "Elephant Beach",
-        description: "Island Beach",
-    },
-    {
-        image: "/greece.jpg",
-        title: "Greece",
-        description: "Santorini Beach",
-    },
-    {
-        image: "/japan.jpg",
-        title: "Japan",
-        description: "Kinkaku-ji",
-    },
-    {
-        image: "/paris.jpg",
-        title: "Paris",
-        description: "Eiffel Tower",
-    },
-    {
-        image: "/thailand.jpg",
-        title: "Thailand",
-        description: "Bangkok",
-    },
-    {
-        image: "/dubai.jpg",
-        title: "Dubai",
-        description: "Burj Khalifa",
-    },
-    {
-        image: "/vietnam.jpg",
-        title: "Vietnam",
-        description: "Temple Of Literature",
-    },
-    {
-        image: "/france.jpg",
-        title: "France",
-        description: "Palace of Versailles",
-    },
-    {
-        image: "/france.jpg",
-        title: "France",
-        description: "Palace of Versailles",
-    },
-    {
-        image: "/paris.jpg",
-        title: "Paris",
-        description: "Eiffel Tower",
-    },
-    {
-        image: "/thailand.jpg",
-        title: "Thailand",
-        description: "Bangkok",
-    },
-    {
-        image: "/dubai.jpg",
-        title: "Dubai",
-        description: "Burj Khalifa",
-    },
-    {
-        image: "/vietnam.jpg",
-        title: "Vietnam",
-        description: "Temple Of Literature",
-    },
-    {
-        image: "/france.jpg",
-        title: "France",
-        description: "Palace of Versailles",
-    },
-    {
-        image: "/france.jpg",
-        title: "France",
-        description: "Palace of Versailles",
-    },
-];
+import { useTranslations } from "next-intl";
+import { destinations } from "@/data/destinationData";
 
 const Destination = () => {
     const [visibleCount, setVisibleCount] = useState(10); // Số card hiển thị
@@ -95,6 +14,7 @@ const Destination = () => {
     const loadMore = () => {
         setVisibleCount((prevCount) => prevCount + 10);
     };
+    const t = useTranslations("General");
 
     return (
         <main className="size-full flex flex-col">
@@ -162,7 +82,7 @@ const Destination = () => {
                 {visibleCount < destinations.length && (
                     <div className="w-full flex-center mt-10">
                         <Button className="rounded-full p-5" onClick={loadMore}>
-                            Load More
+                            {t("load-more")}
                         </Button>
                     </div>
                 )}

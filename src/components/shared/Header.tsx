@@ -17,6 +17,7 @@ import { useTranslations } from "next-intl";
 const Header = () => {
     const t = useTranslations("HomePage");
     const [isOpen, setIsOpen] = useState(false);
+    const [activeIndex, setActiveIndex] = useState<number | null>(0);
     const pathname = usePathname();
     const [_, locale] = pathname.split("/");
     let menuClasses: string[] = [];
@@ -61,6 +62,20 @@ const Header = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, [isOpen]);
 
+    useEffect(() => {
+        const currentIndex = navbarItems.findIndex(
+            (item) =>
+                pathname === `/${locale}${item.url}` ||
+                pathname === item.url ||
+                (item.url === "/destination" &&
+                    pathname.includes("/destination")) ||
+                (item.url === "/blog" && pathname.includes("/blog")) ||
+                (item.url === "/our-tour" && pathname.includes("/our-tour"))
+        );
+
+        // If no index found, set to 0
+        setActiveIndex(currentIndex !== -1 ? currentIndex : 0);
+    }, [pathname, locale]);
     return (
         <header className="w-full bg-secondary py-4 md:p-4 shadow-md sticky top-0 z-30">
             <nav className=" relative flex min-w-full items-center flex-row justify-evenly">
@@ -75,34 +90,23 @@ const Header = () => {
                     </Link>
                 </div>
                 <div className=" my-4 md:my-0">
-                    <ul
-                        // className={`${
-                        //     isOpen ? "flex" : "hidden"
-                        // } md:flex  md:flex-row flex-col md:space-x-8 md:space-y-0 `}
-                        className={getMenuClasses()}
-                    >
-                        {navbarItems.map((item, index) => {
-                            const isActive = pathname === item.url;
-                            return (
-                                <li
-                                    key={index}
-                                    className={`flex items-center text-nowrap space-x-2 transition-colors duration-300 ${
-                                        isActive
-                                            ? "text-primary font-bold"
-                                            : "hover:text-primary"
-                                    }`}
-                                >
-                                    <Icon
-                                        icon={item.icon}
-                                        width={24}
-                                        height={24}
-                                    />
-                                    <Link href={`/${locale}${item.url}`}>
-                                        {t(`${item.title}`)}
-                                    </Link>
-                                </li>
-                            );
-                        })}
+                    <ul className={getMenuClasses()}>
+                        {navbarItems.map((item, index) => (
+                            <li
+                                key={index}
+                                className={`flex items-center text-nowrap space-x-2 transition-colors duration-300 ${
+                                    activeIndex === index
+                                        ? "text-primary font-bold"
+                                        : "hover:text-primary"
+                                }`}
+                                onClick={() => setActiveIndex(index)}
+                            >
+                                <Icon icon={item.icon} width={24} height={24} />
+                                <Link href={`/${locale}${item.url}`}>
+                                    {t(`${item.title}`)}
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
                 </div>
                 <div className="mx-4 hidden sm:block">
@@ -111,7 +115,7 @@ const Header = () => {
                 <div className="flex space-x-4 items-center ">
                     <DropdownLanguages />
                     <ToggleMode />
-                    <Link href="/login">
+                    <Link href={`/${locale}/login`}>
                         <Button className="flex items-center p-4 text-white text-base bg-primary rounded-full">
                             <Icon icon="iconoir:user" />
                             <span>{t("login")}</span>

@@ -11,7 +11,7 @@ export default function Home() {
     return (
         <main className="bg-secondary size-full hide-scrollbar flex flex-col">
             <HeroSection />
-            <div className=" container">
+            <div className="flex flex-col gap-y-20 p-10 lg:p-16 xl:p-24 size-full">
                 <MostPopularTour />
 
                 <AboutInfo />
@@ -21,7 +21,7 @@ export default function Home() {
                 <ExplorePlace />
             </div>
             <VideoEmbed videoId="1025488545" />
-            <div className="container">
+            <div className="flex flex-col gap-y-20 p-10 lg:p-16 xl:p-24 size-full">
                 <FeatureCard />
                 <TravelExperiences />
                 <TravelBlog />

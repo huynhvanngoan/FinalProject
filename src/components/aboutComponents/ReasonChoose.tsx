@@ -5,38 +5,37 @@ import About1 from "@/public/about1.jpg";
 import About2 from "@/public/about2.jpg";
 import About3 from "@/public/about3.jpg";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+const cardsData = [
+    {
+        number: "01",
+        title: "44000-hotels",
+        description: "hotel-description",
+    },
+    {
+        number: "02",
+        title: "global-travel-experts",
+        description: "global-travel-experts-description",
+    },
+    {
+        number: "03",
+        title: "top-cruise-lines-worldwide",
+        description:
+            "top-cruise-lines-worldwide-description",
+    },
+];
 const ReasonChoose = () => {
-    const cardsData = [
-        {
-            number: "01",
-            title: "4,40,00 Hotels",
-            description:
-                "Stacks is a cutting-edge library of stackable content blocks, designed for seamless use with React Native.",
-        },
-        {
-            number: "02",
-            title: "Global Travel Experts",
-            description:
-                "Discover the world with our experts. Enjoy personalized itineraries, exclusive deals, and unforgettable experiences.",
-        },
-        {
-            number: "03",
-            title: "Top Cruise Lines Worldwide",
-            description:
-                "Explore the best global cruise lines for exceptional journeys across the seas and unforgettable travel experiences.",
-        },
-    ];
-
+    const t = useTranslations("General");
     return (
         <section className="size-full flex-center flex-col xl:flex-row gap-[70px]">
             <div className="w-2/4 flex flex-col gap-[30px]">
                 <div className="flex flex-col mb-5">
                     <HighlightTitle
-                        text="Reasons to Choose Us"
+                        text="reasons-to-choose-us"
                         className="text-foreground"
                     />
                     <AppHeader
-                        text="Why Choose Us ?"
+                        text="why-choose-us"
                         size="text-[70px]"
                         font="font-bold"
                     />
@@ -53,9 +52,9 @@ const ReasonChoose = () => {
                         </div>
                         <div className="w-full flex items-start justify-start flex-col gap-[10px]">
                             <p className="font-semibold text-xl">
-                                {card.title}
+                                {t(card.title)}
                             </p>
-                            <p>{card.description}</p>
+                            <p>{t(card.description)}</p>
                         </div>
                     </div>
                 ))}

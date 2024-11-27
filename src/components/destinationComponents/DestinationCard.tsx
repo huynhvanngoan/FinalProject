@@ -1,4 +1,6 @@
-import Image from "next/image";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useTranslations } from "next-intl";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -6,7 +8,7 @@ import { FiEye } from "react-icons/fi";
 
 interface DestinationCardProps {
     height?: string;
-    image: string;
+    image: string | StaticImageData;
     title: string;
     description: string;
     buttonText?: string;
@@ -17,10 +19,11 @@ const DestinationCard: React.FC<DestinationCardProps> = ({
     image,
     title,
     description,
-    buttonText = "Book Tour",
+    buttonText = "book-tour",
 }) => {
     const pathname = usePathname();
     const [_, locale] = pathname.split("/");
+    const t = useTranslations("General");
     return (
         <Link
             href={`/${locale}/destination/${title
@@ -32,7 +35,7 @@ const DestinationCard: React.FC<DestinationCardProps> = ({
             >
                 {/* Nút "All Packages" */}
                 <div className="absolute z-10 py-1 px-4 rounded-full right-4 top-4 bg-white/[0.3] text-white text-sm group-hover:bg-white group-hover:text-primary transition-all">
-                    <span>All Packages</span>
+                    <span>{t("all-packages")}</span>
                 </div>
 
                 {/* Ảnh nền */}
@@ -54,7 +57,7 @@ const DestinationCard: React.FC<DestinationCardProps> = ({
                             <FiEye size={24} />
                         </div>
                         <span className="text-sm font-medium tracking-wide">
-                            {buttonText}
+                            {t(buttonText)}
                         </span>
                     </div>
                 </div>

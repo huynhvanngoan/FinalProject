@@ -1,5 +1,5 @@
-"use client";
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client"
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { StaticImageData } from "next/image";
@@ -12,21 +12,31 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({ bgImage, title }) => {
     const router = useRouter();
     const pathname = usePathname();
+    const [_, locale] = pathname.split("/");
     const bgImageUrl = typeof bgImage === "string" ? bgImage : bgImage.src;
 
-    const routeSegments = pathname.split("/").filter(Boolean).slice(1);
+    // Remove locale from pathname if present and split into segments
+    const cleanPathname = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, "");
+    const routeSegments = cleanPathname.split("/").filter(Boolean);
 
-    const breadcrumb = routeSegments
-        .map(
-            (segment) =>
+    // Create breadcrumb items with paths including locale
+    const breadcrumbItems = routeSegments.map((segment, index) => {
+        // Build the path without locale first
+        const cleanPath = "/" + routeSegments.slice(0, index + 1).join("/");
+        // Add locale to the final path
+        const localePath = `/${locale}${cleanPath}`;
+
+        return {
+            label:
                 segment.replace(/-/g, " ").charAt(0).toUpperCase() +
-                segment.slice(1).replace(/-/g, " ") // Capitalize
-        )
-        .join(" › ");
+                segment.slice(1).replace(/-/g, " "),
+            path: localePath,
+        };
+    });
 
     return (
         <div
-            className="-z-10 w-full h-[500px] relative flex flex-col justify-center items-center text-center text-white"
+            className="w-full h-[500px] relative flex flex-col justify-center items-center text-center text-white"
             style={{
                 backgroundImage: `url(${bgImageUrl})`,
                 backgroundSize: "cover",
@@ -42,11 +52,21 @@ const Banner: React.FC<BannerProps> = ({ bgImage, title }) => {
                 <p className="text-gray-300 mt-2">
                     <span
                         className="cursor-pointer hover:underline"
-                        onClick={() => router.push("/")}
+                        onClick={() => router.push(`/${locale}`)}
                     >
                         Home
-                    </span>{" "}
-                    › {breadcrumb}
+                    </span>
+                    {breadcrumbItems.map((item, index) => (
+                        <React.Fragment key={index}>
+                            <span className="mx-2">›</span>
+                            <span
+                                className="cursor-pointer hover:underline"
+                                onClick={() => router.push(item.path)}
+                            >
+                                {item.label}
+                            </span>
+                        </React.Fragment>
+                    ))}
                 </p>
             </div>
         </div>

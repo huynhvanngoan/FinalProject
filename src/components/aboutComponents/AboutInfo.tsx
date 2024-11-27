@@ -9,7 +9,9 @@ import AboutInfo2 from "@/public/aboutinfo2.jpg";
 import { Button } from "../ui/button";
 import HighlightTitle from "../shared/HighlightTitle";
 import { toast } from "react-toastify";
+import { useTranslations } from "next-intl";
 const AboutInfo = () => {
+    const t = useTranslations("General");
     const handleCopyPhoneNumber = () => {
         const phoneNumber = "0123456789";
         navigator.clipboard.writeText(phoneNumber).then(() => {
@@ -29,7 +31,7 @@ const AboutInfo = () => {
                 </div>
                 <div className="z-1 mt-[9%] ml-[45%] gap-[73px] flex flex-col w-full">
                     <div className="w-[192px] bg-secondary p-5 rounded-md shadow-gray-500 shadow-lg">
-                        <p>Establishment in</p>
+                        <p>{t("establishment-in")}</p>
                         <AppHeader
                             text="2005"
                             size="text-[42px]"
@@ -46,18 +48,14 @@ const AboutInfo = () => {
                 </div>
             </div>
             <div className="w-1/2 flex flex-col">
-                <HighlightTitle text="About Us" className="text-foreground" />
+                <HighlightTitle text="about-us" className="text-foreground" />
                 <div className="w-full flex flex-col">
                     <h2 className="font-poppins font-bold text-[20px] md:text-[35px] xl:text-[54px] text-foreground leading-normal">
-                        Discover Every Corner Of The World With Us.
+                        {t("discover-every-corner-of-the-world-with-us")}
                     </h2>
                 </div>
                 <p className="lg:text-xl text-md text-foreground font-light">
-                    Join us on an extraordinary journey as we explore every
-                    corner of the world together. Our adventures will take you
-                    to hidden gems, iconic landmarks, and breathtaking
-                    landscapes, offering unforgettable experiences and memories.
-                    Discover the beauty and diversity of our planet with us.
+                    {t("about-description")}
                 </p>
                 <Button
                     onClick={handleCopyPhoneNumber}
