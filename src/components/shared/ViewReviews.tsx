@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
