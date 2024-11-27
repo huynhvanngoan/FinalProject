@@ -7,5 +7,6 @@ export type Fields = {
     required?: boolean;
     placeholder?: string;
     render?: (value: any, formData: Record<string, any>) => React.ReactNode;
-    icon?: string; // Thêm icon từ Iconify
+    icon?: string;
+    multiple?: boolean; // Add this line to support multiple file uploads
 };

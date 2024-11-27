@@ -46,11 +46,21 @@ export const userFields: Fields[] = [
 export const tourFields: Fields[] = [
     {
         name: "thumbnail",
-        label: "Thumbnail",
-        type: "text",
-        placeholder: "Enter thumbnail URL",
+        label: "Thumbnails",
+        type: "file", // Changed from "text" to "file"
+        placeholder: "Select main thumbnails",
         required: true,
-        icon: "mdi:image-outline", // Icon for thumbnail
+        icon: "mdi:image-outline",
+        multiple: true, // Added to allow multiple file selection
+    },
+
+    {
+        name: "photo",
+        label: "Photo",
+        type: "file",
+        placeholder: "Upload tour picture",
+        required: false,
+        icon: "mdi:camera-outline",
     },
     {
         name: "title",
@@ -58,7 +68,7 @@ export const tourFields: Fields[] = [
         type: "text",
         placeholder: "Enter tour title",
         required: true,
-        icon: "mdi:format-title", // Icon for title
+        icon: "mdi:format-title",
     },
     {
         name: "location",
@@ -66,7 +76,7 @@ export const tourFields: Fields[] = [
         type: "text",
         placeholder: "Enter tour location",
         required: true,
-        icon: "mdi:map-marker-outline", // Icon for location
+        icon: "mdi:map-marker-outline",
     },
     {
         name: "price",
@@ -74,14 +84,14 @@ export const tourFields: Fields[] = [
         type: "text",
         placeholder: "Enter tour price",
         required: true,
-        icon: "mdi:currency-usd", // Icon for price
+        icon: "mdi:currency-usd",
     },
     {
         name: "startDate",
         label: "Start Date",
         type: "date",
         required: true,
-        icon: "mdi:calendar-outline", // Icon for start date
+        icon: "mdi:calendar-outline",
     },
     {
         name: "duration",
@@ -89,7 +99,7 @@ export const tourFields: Fields[] = [
         type: "text",
         placeholder: "Enter tour duration in days",
         required: true,
-        icon: "mdi:timer-outline", // Icon for duration
+        icon: "mdi:timer-outline",
     },
     {
         name: "rating",
@@ -103,7 +113,7 @@ export const tourFields: Fields[] = [
             { value: "5", label: "5 Stars" },
         ],
         required: true,
-        icon: "mdi:star-outline", // Icon for rating
+        icon: "mdi:star-outline",
     },
     {
         name: "description",
@@ -111,6 +121,44 @@ export const tourFields: Fields[] = [
         type: "text",
         placeholder: "Enter tour description",
         required: true,
-        icon: "mdi:comment-outline", // Icon for description
+        icon: "mdi:comment-outline",
+    },
+    {
+        name: "typeId",
+        label: "Tour Type ID",
+        type: "text",
+        placeholder: "Enter tour type ID",
+        required: true,
+        icon: "mdi:tag-outline",
+    },
+    {
+        name: "packageId",
+        label: "Package ID",
+        type: "text",
+        placeholder: "Enter package ID",
+        required: true,
+        icon: "mdi:package-variant-outline",
+    },
+    {
+        name: "destinationId",
+        label: "Destination ID",
+        type: "text",
+        placeholder: "Enter destination ID",
+        required: true,
+        icon: "mdi:map-marker-radius-outline",
+    },
+    {
+        name: "createdAt",
+        label: "Created At",
+        type: "date",
+        required: false,
+        icon: "mdi:clock-outline",
+    },
+    {
+        name: "updatedAt",
+        label: "Updated At",
+        type: "date",
+        required: false,
+        icon: "mdi:clock-edit-outline",
     },
 ];

@@ -6,6 +6,7 @@ import ReviewCard from "./ReviewCard";
 import NextPrevButton from "../shared/NextPrevButton";
 import { usePagination } from "@/hooks/usePagination";
 
+
 interface Testimonial {
     id: number;
     username: string;
@@ -71,10 +72,10 @@ const TravelExperiences = () => {
             <div className="flex flex-row justify-between items-center">
                 <div className="flex flex-col">
                     <HighlightTitle
-                        text="Latest Testimonial"
+                        text="latest-testimonial"
                         className="text-foreground"
                     />
-                    <AppHeader text="Traveling Experiences" />
+                    <AppHeader text="traveling-experiences" />
                 </div>
                 <div className="hidden sm:block">
                     <NextPrevButton

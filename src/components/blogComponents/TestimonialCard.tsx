@@ -42,7 +42,7 @@ const TestimonialCard = () => {
                 clickable: true,
             }}
             modules={[Autoplay, Scrollbar]}
-            className="w-full h-[283px] border-2 border-secondary rounded-md "
+            className="w-full border-2 border-secondary rounded-md "
         >
             {testimonials.map((testimonial, index) => (
                 <SwiperSlide key={index}>

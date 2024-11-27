@@ -19,7 +19,7 @@ const ContactPage = () => {
                 </div>
             </div>
             <div className="size-full">
-                <div className="w-full h-[480px] bg-secondary mx-auto flex items-center justify-start flex-col py-[50px] xs:mb-20 mb-52">
+                <div className="w-full h-[480px] bg-white mx-auto flex items-center justify-start flex-col py-[50px] xs:mb-20 mb-52">
                     <h2 className="text-3xl mx-auto font-semibold">
                         Send Us a Message
                     </h2>

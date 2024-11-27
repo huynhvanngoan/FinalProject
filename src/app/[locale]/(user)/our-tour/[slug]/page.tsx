@@ -16,6 +16,7 @@ import Map from "@/components/shared/Map";
 import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
+import Review from "@/components/shared/Review";
 
 const itineraryData = [
     {
@@ -203,6 +204,7 @@ const TourDetails = () => {
                         ]}
                     />
                     <ItinerarySection itineraryData={itineraryData} />
+                    <Review />
                     <div className="block md:hidden w-full space-y-12">
                         <BookForm />
                         <Map location={title} />

@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
-
+import { useTranslations } from "next-intl";
 interface ReviewCardProps {
     username: string;
     reviewText: string;
@@ -15,7 +15,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
     date,
 }) => {
     const TOTAL_STARS = 5;
-
+    const t = useTranslations("General")
     const renderStar = (index: number) => {
         if (index < Math.floor(stars)) {
             // Full star
@@ -69,7 +69,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <p>{reviewText}</p>
             <div className="flex flex-col gap-2 items-start">
                 <div className="flex gap-2 flex-center">
-                    <span>({stars} stars)</span>
+                    <span>({stars} {t("stars")})</span>
                     <div className="flex gap-1">
                         {[...Array(TOTAL_STARS)].map((_, index) => (
                             <div key={index} className="relative">
@@ -78,7 +78,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
                         ))}
                     </div>
                 </div>
-                <span>Posted on: {date}</span>
+                <span>{t("posted-on")}: {date}</span>
             </div>
         </div>
     );
