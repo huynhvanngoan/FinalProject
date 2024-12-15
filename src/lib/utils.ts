@@ -9,3 +9,5 @@ export const getLocalizedUrl = (url: string, locale: string) => {
     const languageCode = locale || "en";
     return `/${languageCode}${url}`;
 };
+
+

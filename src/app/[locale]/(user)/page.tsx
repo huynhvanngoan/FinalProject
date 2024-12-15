@@ -8,6 +8,7 @@ import TravelBlog from "@/components/homeComponents/TravelBlog";
 import TravelExperiences from "@/components/homeComponents/TravelExperiences";
 import VideoEmbed from "@/components/shared/VideoEmbed";
 export default function Home() {
+    
     return (
         <main className="bg-secondary size-full hide-scrollbar flex flex-col">
             <HeroSection />

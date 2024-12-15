@@ -161,7 +161,7 @@ const TourDetails = () => {
                 <div className="md:w-3/4 w-full">
                     <TourHeader
                         title={title}
-                        price={88}
+                        price={75}
                         location={location}
                         details={details}
                     />

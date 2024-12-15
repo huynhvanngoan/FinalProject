@@ -25,7 +25,7 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 // Locations for the combobox
-const locations = [
+export const locations = [
     { label: "New York", value: "ny" },
     { label: "Los Angeles", value: "la" },
     { label: "Chicago", value: "ch" },
@@ -35,6 +35,7 @@ const locations = [
     { label: "Las Vegas", value: "lv" },
     { label: "Orlando", value: "or" },
     { label: "Seattle", value: "se" },
+    { label: "Singapore", value: "sg" },
 ] as const;
 
 type ComboboxFormProps = {

@@ -63,6 +63,7 @@
         "load-more": "Load More",
         "all-packages": "All Packages",
         "book-tour": "Book Tour",
-        "destination-tour-packages": "Destination Tour Packages"
+        "destination-tour-packages": "Destination Tour Packages",
+        "most-popular-tour": "Most Popular Tours"
     }
 }

@@ -19,6 +19,8 @@ import { Menu } from "lucide-react";
 import { SidebarItems } from "@/utils/config";
 import ToggleMode from "../shared/ToggleMode";
 import DropdownLanguages from "../shared/DropdownLanguages";
+import Image from "next/image";
+import Logo from "@/public/Logo.svg";
 
 export default function TopNav() {
     const sidebarItems = SidebarItems();
@@ -31,8 +33,12 @@ export default function TopNav() {
                 className="flex items-center gap-2 text-lg font-semibold md:text-base"
                 prefetch={false}
             >
-                <span className="w-8 h-8 border bg-accent rounded-full" />
-                <span>Acme Inc</span>
+                <Image
+                    src={Logo}
+                    alt="..."
+                    width={200}
+                    className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+                />
             </Link>
 
             <div className="ml-4 flex items-center gap-3">
@@ -53,7 +59,6 @@ export default function TopNav() {
                                 <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                         </Button>
-                        
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>

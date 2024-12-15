@@ -19,18 +19,31 @@ interface ExtraServicesFormProps {
 }
 
 const defaultServices: Service[] = [
-  {
-    id: "healthCoverage",
-    name: "Health Coverage Insurance",
-    price: 218,
-    description: "Comprehensive health coverage during your trip"
-  },
-  {
-    id: "medicalInsurance",
-    name: "Medical Insurance",
-    price: 35,
-    description: "Basic medical insurance for emergencies"
-  }
+ {
+            id: "healthCoverage",
+            name: "Comprehensive Travel Health Insurance",
+            price: 250,
+            description: "Full medical coverage and emergency assistance",
+        },
+        {
+            id: "travelInsurance",
+            name: "Comprehensive Travel Protection",
+            price: 150,
+            description:
+                "Trip cancellation, interruption, and baggage protection",
+        },
+        {
+            id: "guidedTours",
+            name: "Professional Local Guide",
+            price: 100,
+            description: "Expert local guide for in-depth tour experiences",
+        },
+        {
+            id: "transportPackage",
+            name: "Private Transportation Package",
+            price: 200,
+            description: "Comfortable private transfers throughout the tour",
+        },
 ];
 
 const ExtraServicesForm: React.FC<ExtraServicesFormProps> = ({ 

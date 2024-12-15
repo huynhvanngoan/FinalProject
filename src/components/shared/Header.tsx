@@ -13,6 +13,15 @@ import { usePathname } from "next/navigation";
 import SearchBox from "./SearchBox";
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const Header = () => {
     const t = useTranslations("HomePage");
@@ -115,12 +124,39 @@ const Header = () => {
                 <div className="flex space-x-4 items-center ">
                     <DropdownLanguages />
                     <ToggleMode />
-                    <Link href={`/${locale}/login`}>
+                    {/* <Link href={`/${locale}/login`}>
                         <Button className="flex items-center p-4 text-white text-base bg-primary rounded-full">
                             <Icon icon="iconoir:user" />
                             <span>{t("login")}</span>
                         </Button>
-                    </Link>
+                    </Link> */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="overflow-hidden rounded-full"
+                            >
+                                <Avatar>
+                                    <AvatarImage
+                                        src="https://github.com/shadcn.png"
+                                        alt="@shadcn"
+                                    />
+                                    <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <Link href={`/${locale}/profile`}>Profile</Link>
+                            </DropdownMenuItem>
+                            {/* <DropdownMenuItem>Support</DropdownMenuItem> */}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Logout</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <div className="md:hidden flex items-center mx-2">
                     <Button

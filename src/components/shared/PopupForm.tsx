@@ -190,104 +190,26 @@ const PopupForm: React.FC<PopupFormProps> = ({
                         )}
                     </div>
                 );
-            // case "file":
-            //     if (isViewMode) {
-            //         const value = formData[name] || formik.values[name];
-            //         return (
-            //             <div className="grid gap-2" key={name}>
-            //                 <Label className="text-sm font-medium">
-            //                     {label}
-            //                 </Label>
-            //                 <div className="text-sm py-2">
-            //                     {value ? (
-            //                         <a
-            //                             href={value}
-            //                             target="_blank"
-            //                             rel="noopener noreferrer"
-            //                         >
-            //                             {value}
-            //                         </a>
-            //                     ) : (
-            //                         "-"
-            //                     )}
-            //                 </div>
-            //             </div>
-            //         );
-            //     }
-            //     return (
-            //         <div className="grid gap-2" key={name}>
-            //             <Label htmlFor={name}>
-            //                 {label}
-            //                 {required && (
-            //                     <span className="text-red-500">*</span>
-            //                 )}
-            //             </Label>
-            //             <Input
-            //                 id={name}
-            //                 type="file"
-            //                 onChange={(
-            //                     e: React.ChangeEvent<HTMLInputElement>
-            //                 ) => {
-            //                     const file = e.target.files?.[0];
-            //                     if (file) {
-            //                         // Update formik and local state
-            //                         formik.setFieldValue(name, file);
-            //                         handleLocalStateChange(name, file);
-            //                     }
-            //                 }}
-            //                 className={hasError ? "border-red-500" : ""}
-            //             />
-            //             {hasError && (
-            //                 <div className="text-sm text-red-500">
-            //                     {formik.errors[name]}
-            //                 </div>
-            //             )}
-            //         </div>
-            //     );
+           
             case "file":
                 if (isViewMode) {
-                    const value = formData[name] || formik.values[name];
-                    // const renderFileLinks = (files: File[] | string[]) => {
-                    //     if (!files || files.length === 0) return "-";
-                    //     return files?.map((file, index) => {
-                    //         // If it's a string (URL), render as link
-                    //         if (typeof file === "string") {
-                    //             return (
-                    //                 <a
-                    //                     key={index}
-                    //                     href={file}
-                    //                     target="_blank"
-                    //                     rel="noopener noreferrer"
-                    //                     className="block"
-                    //                 >
-                    //                     {file}
-                    //                 </a>
-                    //             );
-                    //         }
-                    //         // If it's a File object, render filename
-                    //         return (
-                    //             <div key={index} className="block">
-                    //                 {file.name}
-                    //             </div>
-                    //         );
-                    //     });
-                    // };
+                    const value = formData[name] || formik.values[name]
                     const renderFileLinks = (
                         files: File[] | string[] | File | string
                     ) => {
-                        // If files is undefined or empty, return "-"
+                       
                         if (!files) return "-";
 
-                        // If files is a single file or string, convert to array
+                        
                         const fileArray = Array.isArray(files)
                             ? files
                             : [files];
 
-                        // If array is empty after conversion, return "-"
+                        
                         if (fileArray.length === 0) return "-";
 
                         return fileArray.map((file, index) => {
-                            // If it's a string (URL), render as link
+                            
                             if (typeof file === "string") {
                                 return (
                                     <a
@@ -331,21 +253,20 @@ const PopupForm: React.FC<PopupFormProps> = ({
                         <Input
                             id={name}
                             type="file"
-                            multiple={multiple} // Add multiple attribute
+                            multiple={multiple} 
                             onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
                             ) => {
                                 const files = e.target.files;
                                 if (files) {
-                                    // If multiple is true, convert FileList to array
-                                    // If multiple is false, take only the first file
+                                    
                                     const processedFiles = multiple
                                         ? Array.from(files)
                                         : files[0]
                                         ? [files[0]]
                                         : [];
 
-                                    // Update formik and local state
+                                    
                                     formik.setFieldValue(name, processedFiles);
                                     handleLocalStateChange(
                                         name,
@@ -441,7 +362,7 @@ const PopupForm: React.FC<PopupFormProps> = ({
                     {renderIcon()}
                     <DialogTitle>
                         {mode === "edit"
-                            ? `Edit ${title}`
+                            ? ` ${title}`
                             : mode === "view"
                             ? `View ${title}`
                             : title}
@@ -506,10 +427,9 @@ const PopupForm: React.FC<PopupFormProps> = ({
                                             Cancel
                                         </Button>
                                         <Button
+                                        className="ml-2"
                                             type="submit"
-                                            disabled={
-                                                !formik.isValid || !formik.dirty
-                                            }
+                                        
                                         >
                                             {mode === "edit"
                                                 ? "Update"

@@ -11,6 +11,7 @@ import {
     SortingState,
     ColumnFiltersState,
     useReactTable,
+    ColumnPinningState,
 } from "@tanstack/react-table";
 import { Icon } from "@iconify/react";
 
@@ -38,6 +39,10 @@ export function DataTable<TData, TValue>({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
         {}
     );
+    const [columnPinning, setColumnPinning] = useState<ColumnPinningState>({
+        left: [],
+        right: [],
+    });
 
     const table = useReactTable({
         data,
@@ -50,16 +55,22 @@ export function DataTable<TData, TValue>({
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: setSorting,
         onColumnVisibilityChange: setColumnVisibility,
+        onColumnPinningChange: setColumnPinning,
         state: {
             sorting,
             columnFilters,
             columnVisibility,
             globalFilter,
+            columnPinning,
         },
         initialState: {
             pagination: {
                 pageSize: 10,
             },
+            columnPinning: {
+              
+                right: ['actions'],
+              },
         },
     });
 
@@ -80,7 +91,7 @@ export function DataTable<TData, TValue>({
             />
 
             <div className="overflow-x-auto">
-                <Table className="w-full min-w-[1200px]">
+                <Table className="w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>

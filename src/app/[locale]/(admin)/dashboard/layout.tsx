@@ -7,8 +7,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopNav from "@/components/admin/TopNav";
 import Sidebar from "@/components/admin/Sidebar";
-
+import "froala-editor/css/froala_style.min.css";
+import "froala-editor/css/froala_editor.pkgd.min.css";
 import { Poppins, Sacramento } from "next/font/google";
+import { DataProvider } from "@/app/context/AppContext";
+import { cookies } from "next/headers";
+import AppProvider from "@/app/context/AppProvider";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -42,11 +46,12 @@ export default async function AdminLayout({
     params: { locale: string };
 }>) {
     const messages = await getMessages();
-
+    const cookieStore = cookies();
+    const sessionToken = cookieStore.get("sessionToken");
     return (
         <html lang={locale}>
             <body
-                className={`${poppins.variable} ${poppinsBold.variable} ${sacramento.variable} antialiased min-h-full flex flex-col overflow-hidden`}
+                className={`${poppins.variable} ${poppinsBold.variable} ${sacramento.variable} antialiased h-full bg-secondary flex flex-col overflow-hidden`}
             >
                 <ThemeProvider
                     attribute="class"
@@ -55,14 +60,20 @@ export default async function AdminLayout({
                     disableTransitionOnChange
                 >
                     <NextIntlClientProvider messages={messages}>
-                        <TopNav />
-                        <div className="flex flex-1">
-                            <Sidebar />
-                            <main className="flex-1 bg-secondary overflow-y-auto p-4">
-                                {children}
-                            </main>
-                        </div>
-                        <ToastContainer />
+                        <AppProvider initialSessionToken={sessionToken?.value}>
+                            <DataProvider>
+                                <TopNav />
+                                <div className="flex flex-1">
+                                    <Sidebar />
+                                    <main className="flex-1 bg-secondary overflow-y-auto p-4 max-h-[calc(100vh-64px)]">
+                                        <div className="h-full overflow-y-auto">
+                                            {children}
+                                        </div>
+                                    </main>
+                                </div>
+                                <ToastContainer />
+                            </DataProvider>
+                        </AppProvider>
                     </NextIntlClientProvider>
                 </ThemeProvider>
             </body>

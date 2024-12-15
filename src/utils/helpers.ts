@@ -1,3 +1,6 @@
+import { addMonths } from "date-fns";
+import { CONSTANTS } from "./constants";
+
 interface PaginationResult<T> {
     paginatedItems: T[];
     totalPages: number;
@@ -38,3 +41,8 @@ const getCapitalizedTitleFromPath = (pathname: string) => {
 };
 
 export default getCapitalizedTitleFromPath;
+
+export const maxBookingDate = addMonths(
+    new Date(),
+    CONSTANTS.MAX_BOOKING_MONTHS
+);
