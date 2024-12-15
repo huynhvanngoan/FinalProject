@@ -162,7 +162,7 @@ const ViewReviews = memo(() => {
             rating: 4.7,
             date: "25 JAN 2021",
             comment:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur have is covered many vulputate vestibulum Phasellus rhoncus, dolor eget viverra pretium dolor tellus aliquet nunc, vitae ultricies erat elit eu lacus.",
+                "Greate tour",
             avatar: "/api/placeholder/48/48",
         },
         {
@@ -171,7 +171,7 @@ const ViewReviews = memo(() => {
             rating: 3.8,
             date: "26 JAN 2021",
             comment:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur have is covered many vulputate vestibulum Phasellus rhoncus, dolor eget viverra pretium dolor tellus aliquet nunc, vitae ultricies erat elit eu lacus.",
+                "So beautiful.",
             avatar: "/api/placeholder/48/48",
         },
     ];

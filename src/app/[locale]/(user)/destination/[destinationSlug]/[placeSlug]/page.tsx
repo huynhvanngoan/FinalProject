@@ -205,12 +205,12 @@ const TourDetails = () => {
                     />
                     <ItinerarySection itineraryData={itineraryData} />
                     <Review />
-                    <div className="block md:hidden w-full space-y-12">
+                    <div className="block md:hidden mt-8 w-full space-y-12">
                         <BookForm />
                         <Map location={title} />
                     </div>
                 </div>
-                <aside className="hidden md:block w-1/3 space-y-12">
+                <aside className="hidden md:block w-1/2 space-y-12">
                     <BookForm />
                     <div className="w-full h-[558px]">
                         <Map location={title} />

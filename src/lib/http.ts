@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import envConfig from "@/config";
+import { LoginResType } from "@/schemaValidations/auth.schema";
 
 type CustomOptions = RequestInit & {
     baseUrl?: string | undefined;
@@ -18,15 +19,44 @@ class HttpError extends Error {
     }
 }
 
+class SessionToken {
+    private token = "";
+    get value() {
+        return this.token;
+    }
+    set value(token: string) {
+        if (typeof window === "undefined") {
+            throw new Error("Cannot set token on server side");
+        }
+        this.token = token;
+    }
+}
+
+export const sessionToken = new SessionToken();
+
 const request = async <Response>(
-    method: "GET" | "POST" | "PUT" | "DELETE",
+    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
     url: string,
     options?: CustomOptions | undefined
 ) => {
-    const body = options?.body ? JSON.stringify(options.body) : undefined;
-    const baseHeaders = {
-        "Content-Type": "application/json",
-    };
+    const body = options?.body
+        ? options.body instanceof FormData
+            ? options.body
+            : JSON.stringify(options.body)
+        : undefined;
+    const baseHeaders =
+        body instanceof FormData
+            ? {
+                  Authorization: sessionToken.value
+                      ? `Bearer ${sessionToken.value}`
+                      : "",
+              }
+            : {
+                  "Content-Type": "application/json",
+                  Authorization: sessionToken.value
+                      ? `Bearer ${sessionToken.value}`
+                      : "",
+              };
 
     const baseUrl =
         options?.baseUrl === undefined
@@ -54,6 +84,11 @@ const request = async <Response>(
     if (!res.ok) {
         throw new HttpError(data);
     }
+    if (["/auth/login", "/auth/sign-up"].includes(url)) {
+        sessionToken.value = (payload as LoginResType).data.accessToken;
+    } else if ("/auth/logout".includes(url)) {
+        sessionToken.value = "";
+    }
     return data;
 };
 
@@ -80,10 +115,17 @@ const http = {
     },
     delete<Response>(
         url: string,
-        body: any,
+        body?: any,
         options?: Omit<CustomOptions, "body"> | undefined
     ) {
         return request<Response>("DELETE", url, { ...options, body });
+    },
+    patch<Response>(
+        url: string,
+        body: any,
+        options?: Omit<CustomOptions, "body"> | undefined
+    ) {
+        return request<Response>("PATCH", url, { ...options, body }); // Added PATCH method here
     },
 };
 

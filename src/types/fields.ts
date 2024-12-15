@@ -8,5 +8,5 @@ export type Fields = {
     placeholder?: string;
     render?: (value: any, formData: Record<string, any>) => React.ReactNode;
     icon?: string;
-    multiple?: boolean; // Add this line to support multiple file uploads
+    multiple?: boolean; 
 };

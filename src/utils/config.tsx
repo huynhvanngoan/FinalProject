@@ -14,7 +14,7 @@ export const SidebarItems = () => {
             href: "/dashboard",
             icon: (
                 <Icon icon="mage:dashboard-chart-star" width={28} height={28} />
-            ), 
+            ),
             active: pathname === "/dashboard",
             position: "top",
         },
@@ -53,11 +53,24 @@ export const SidebarItems = () => {
             position: "top",
         },
         {
-            name: "Settings",
-            href: "/dashboard/settings",
-            icon: <Icon icon="mdi:cog" width={28} height={28} />,
-            active: isNavItemActive(pathname, "/dashboard/settings"),
-            position: "bottom",
+            name: "Posts",
+            href: "/dashboard/posts",
+            icon: (
+                <Icon
+                    icon="material-symbols:post-outline"
+                    width={28}
+                    height={28}
+                />
+            ),
+            active: isNavItemActive(pathname, "/dashboard/post"),
+            position: "top",
         },
+        // {
+        //     name: "Settings",
+        //     href: "/dashboard/settings",
+        //     icon: <Icon icon="mdi:cog" width={28} height={28} />,
+        //     active: isNavItemActive(pathname, "/dashboard/settings"),
+        //     position: "bottom",
+        // },
     ];
 };

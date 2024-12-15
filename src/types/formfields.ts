@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CONSTANTS } from "@/utils/constants";
 import { Fields } from "./fields";
+import { locations } from "@/components/shared/Combobox";
 
 export const userFields: Fields[] = [
     {
@@ -7,7 +10,7 @@ export const userFields: Fields[] = [
         type: "file",
         placeholder: "Upload profile picture",
         required: true,
-        icon: "mdi:account-circle-outline", // Icon for profile picture
+        icon: "mdi:account-circle-outline",
     },
     {
         name: "email",
@@ -15,7 +18,7 @@ export const userFields: Fields[] = [
         type: "text",
         placeholder: "Enter email address",
         required: true,
-        icon: "mdi:email-outline", // Icon for email
+        icon: "mdi:email-outline",
     },
     {
         name: "first_name",
@@ -23,7 +26,7 @@ export const userFields: Fields[] = [
         type: "text",
         placeholder: "Enter first name",
         required: true,
-        icon: "mdi:account-outline", // Icon for first name
+        icon: "mdi:account-outline",
     },
     {
         name: "last_name",
@@ -31,7 +34,7 @@ export const userFields: Fields[] = [
         type: "text",
         placeholder: "Enter last name",
         required: true,
-        icon: "mdi:account-outline", // Icon for last name
+        icon: "mdi:account-outline",
     },
     {
         name: "bio",
@@ -39,7 +42,7 @@ export const userFields: Fields[] = [
         type: "text",
         placeholder: "Enter user bio",
         required: false,
-        icon: "mdi:book-outline", // Icon for bio
+        icon: "mdi:book-outline",
     },
 ];
 
@@ -47,11 +50,11 @@ export const tourFields: Fields[] = [
     {
         name: "thumbnail",
         label: "Thumbnails",
-        type: "file", // Changed from "text" to "file"
+        type: "file",
         placeholder: "Select main thumbnails",
         required: true,
         icon: "mdi:image-outline",
-        multiple: true, // Added to allow multiple file selection
+        multiple: true,
     },
 
     {
@@ -147,18 +150,156 @@ export const tourFields: Fields[] = [
         required: true,
         icon: "mdi:map-marker-radius-outline",
     },
+];
+
+export const destinationFields: Fields[] = [
     {
-        name: "createdAt",
-        label: "Created At",
-        type: "date",
-        required: false,
-        icon: "mdi:clock-outline",
+        name: "photo",
+        label: "Photo",
+        type: "file",
+        placeholder: "Select photo",
+        required: true,
+        icon: "mdi:image-outline",
+        // multiple: true,
     },
     {
-        name: "updatedAt",
-        label: "Updated At",
-        type: "date",
-        required: false,
-        icon: "mdi:clock-edit-outline",
+        name: "name",
+        label: "Name",
+        type: "text",
+        placeholder: "Enter destination name",
+        required: true,
+        icon: "mdi:format-title",
     },
+    {
+        name: "description",
+        label: "Description",
+        type: "text",
+        placeholder: "Enter destination description",
+        required: true,
+        icon: "mdi:comment-outline",
+    },
+];
+
+export const bookingFields: Fields[] = [
+    {
+        name: "location",
+        label: "Location",
+        type: "select",
+        options: locations.map((type: any) => ({
+            value: type.value,
+            label: type.label,
+        })),
+        required: true,
+        icon: "mdi:map-marker-outline",
+    },
+    {
+        name: "number_of_travelers",
+        label: "Number of Travelers",
+        type: "text",
+        placeholder: "Enter number of travelers",
+        required: true,
+        icon: "mdi:account-multiple-outline",
+    },
+    {
+        name: "tour_type",
+        label: "Tour Type",
+        type: "select",
+        options: CONSTANTS.TOUR_TYPES.map((type: any) => ({
+            value: type.value,
+            label: type.label,
+        })),
+        required: true,
+        icon: "mdi:format-list-bulleted-square",
+    },
+    {
+        name: "travel_class",
+        label: "Travel Class",
+        type: "select",
+        options: Object.keys(CONSTANTS.TOUR_CLASS_PRICES).map((classType) => ({
+            value: classType,
+            label: `${classType.charAt(0).toUpperCase()}${classType.slice(
+                1
+            )} Class`,
+        })),
+        required: true,
+        icon: "mdi:format-list-numbered-circle",
+    },
+    {
+        name: "checkin_date",
+        label: "Check-In Date",
+        type: "date",
+        required: true,
+        icon: "mdi:calendar-range-outline",
+    },
+    {
+        name: "checkout_date",
+        label: "Check-Out Date",
+        type: "date",
+        required: true,
+        icon: "mdi:calendar-range-outline",
+    },
+    {
+        name: "full_name",
+        label: "Full Name",
+        type: "text",
+        placeholder: "Enter full name",
+        required: true,
+        icon: "mdi:account-outline",
+    },
+    {
+        name: "email",
+        label: "Email",
+        type: "text",
+        placeholder: "Enter email address",
+        required: true,
+        icon: "mdi:email-outline",
+    },
+    {
+        name: "phone_number",
+        label: "Phone Number",
+        type: "text",
+        placeholder: "Enter phone number",
+        required: true,
+        icon: "mdi:phone-outline",
+    },
+    {
+        name: "passport_number",
+        label: "Passport Number",
+        type: "text",
+        placeholder: "Enter passport number",
+        required: true,
+        icon: "mdi:passport-outline",
+    },
+    {
+        name: "nationality",
+        label: "Nationality",
+        type: "text",
+        placeholder: "Enter nationality",
+        required: true,
+        icon: "mdi:earth-outline",
+    },
+    {
+        name: "dietary_restrictions",
+        label: "Dietary Restrictions",
+        type: "text",
+        placeholder: "Enter dietary restrictions",
+        required: false,
+        icon: "mdi:food-variant-outline",
+    },
+    {
+        name: "emergency_name",
+        label: "Emergency Contact Name",
+        type: "text",
+        placeholder: "Enter emergency contact name",
+        required: true,
+        icon: "mdi:account-alert-outline",
+    },
+    {
+        name: "emergency_phone",
+        label: "Emergency Contact Phone",
+        type: "text",
+        placeholder: "Enter emergency contact phone number",
+        required: true,
+        icon: "mdi:phone-outline",
+    }
 ];

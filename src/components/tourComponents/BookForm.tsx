@@ -1,153 +1,209 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
-
-import React, { useState, useEffect } from "react";
-import { addMonths } from "date-fns";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useCallback, useMemo, useState } from "react";
+import { Control } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { CalendarForm } from "../shared/CalendarForm";
-import ComboboxForm from "../shared/Combobox";
-import { AppInput } from "../shared/AppInput"; // Import the AppInput component
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { CalendarForm } from "@/components/shared/CalendarForm";
+import ComboboxForm from "@/components/shared/Combobox";
+import { AppInput } from "@/components/shared/AppInput";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { CONSTANTS, formSelectConfigs } from "@/utils/constants";
+import {
+    BookingFormSchemaKey,
+    BookingFormSchemaType,
+} from "@/schemaValidations/booking.schema";
+import { calculateTotalPrice } from "@/utils/calculatePrice";
 import ExtraServicesForm from "./ExtraServicesForm";
+import { PricingSummary } from "./PricingSummary";
+import { useBookingForm } from "@/hooks/useBookings";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { FormSelect } from "../shared/AppSelect";
+import { maxBookingDate } from "@/utils/helpers";
+import CheckoutForm from "./CheckoutForm";
+import convertToSubcurrency from "@/lib/convertToSubcurrency";
 
-const FormSchema = z
-    .object({
-        location: z.string().nonempty("Location is required."),
-        checkIn: z.date({ required_error: "Check-in date is required." }),
-        checkOut: z.date({ required_error: "Check-out date is required." }),
-        travelers: z.number().min(1, "At least one traveler is required."), // Add travelers field
-        healthCoverage: z.boolean().optional().default(false),
-        medicalInsurance: z.boolean().optional().default(false),
-    })
-    .refine((data) => data.checkOut > data.checkIn, {
-        message: "Check-out date must be after check-in date",
-        path: ["checkOut"],
-    });
+if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
+    throw new Error("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined");
+}
 
+const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 export default function BookForm() {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-    });
-    const [selectedLocation, setSelectedLocation] = useState<string>("");
+    const {
+        state,
+        handleDestinationChange,
+        handleServiceChange,
+        selectedServiceDetails,
+        form,
+    } = useBookingForm();
+    const [showCheckout, setShowCheckout] = useState(false);
 
-    const maxBookingDate = addMonths(new Date(), 6);
-    const [selectedServices, setSelectedServices] = useState<Set<string>>(
-        new Set()
+    const totalPrice = useMemo(
+        () => calculateTotalPrice(form.getValues(), state.selectedServices),
+        [form, state.selectedServices]
     );
 
-    const handleServiceChange = (serviceId: string, checked: boolean) => {
-        setSelectedServices((prev) => {
-            const newServices = new Set(prev);
-            if (checked) {
-                newServices.add(serviceId);
-            } else {
-                newServices.delete(serviceId);
-            }
-            return newServices;
-        });
-    };
+    // Memoized submit handler
+    const onSubmit = useCallback(
+        (data: BookingFormSchemaType) => {
+            toast({
+                title: "Tour Booking Details:",
+                description: (
+                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                        <code className="text-white">
+                            {JSON.stringify(
+                                {
+                                    ...data,
+                                    selectedServices: selectedServiceDetails,
+                                    pricing: totalPrice,
+                                },
+                                null,
+                                2
+                            )}
+                        </code>
+                    </pre>
+                ),
+            });
+            setShowCheckout(true);
+        },
+        [selectedServiceDetails, totalPrice]
+    );
 
-    // Tùy chỉnh danh sách dịch vụ (nếu cần)
-    const customServices = [
+    const calendarFormConfigs: Array<{
+        name: "checkIn" | "checkOut";
+        label: string;
+        minDate: Date;
+        maxDate: Date;
+    }> = [
         {
-            id: "healthCoverage",
-            name: "Health Coverage Insurance",
-            price: 218,
-            description: "Comprehensive health coverage during your trip",
+            name: "checkIn",
+            label: "Check-in Date",
+            minDate: new Date(),
+            maxDate: maxBookingDate,
         },
         {
-            id: "medicalInsurance",
-            name: "Medical Insurance",
-            price: 35,
-            description: "Basic medical insurance for emergencies",
+            name: "checkOut",
+            label: "Check-out Date",
+            minDate: form.watch("checkIn") || new Date(),
+            maxDate: maxBookingDate,
         },
-        // Thêm các dịch vụ khác tại đây
     ];
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: "Booking Details:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">
-                        {JSON.stringify(
-                            {
-                                location: data.location,
-                                checkIn: data.checkIn
-                                    .toISOString()
-                                    .split("T")[0],
-                                checkOut: data.checkOut
-                                    .toISOString()
-                                    .split("T")[0],
-                                travelers: data.travelers,
-                            },
-                            null,
-                            2
-                        )}
-                    </code>
-                </pre>
-            ),
-        });
-    }
-
-    useEffect(() => {
-        form.setValue("location", selectedLocation);
-    }, [selectedLocation, form]);
-
     return (
-        <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="w-full space-y-6 shadow-xl p-10 rounded-lg"
-            >
-                <div className="space-y-4">
-                    <ComboboxForm
-                        selectedLocation={selectedLocation}
-                        onLocationChange={setSelectedLocation}
-                    />
-                    <CalendarForm
-                        control={form.control}
-                        name="checkIn"
-                        label="Check-in Date"
-                        minDate={new Date()}
-                        maxDate={maxBookingDate}
-                    />
-                    <CalendarForm
-                        control={form.control}
-                        name="checkOut"
-                        label="Check-out Date"
-                        minDate={form.watch("checkIn") || new Date()}
-                        maxDate={maxBookingDate}
-                    />
-                    {/* Add the AppInput field for travelers */}
-                    <AppInput
-                        control={form.control}
-                        name="travelers"
-                        label="Number of Travelers"
-                        type="number"
-                        placeholder="Enter number of travelers"
-                        icon="ic:outline-group" // Group icon for travelers
-                    />
-                    <ExtraServicesForm
-                        control={form}
-                        services={customServices}
-                        onServiceChange={handleServiceChange}
-                    />
-                </div>
+        <Card className="w-full  mx-auto shadow-xl p-5 rounded-lg">
+            <CardHeader>
+                <CardTitle>Tour Booking Form</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-8 ">
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="w-full space-y-6 "
+                    >
+                        <div className="grid grid-cols-2 gap-8 w-full">
+                            {/* Destination Selection */}
+                            <ComboboxForm
+                                selectedLocation={state.selectedDestination}
+                                onLocationChange={handleDestinationChange}
+                            />
 
-                <Button
-                    type="submit"
-                    className="w-full py-5 rounded-full bg-primary text-white hover:scale-105 transition-all duration-200 ease-in-out shadow-lg hover:shadow-xl"
-                >
-                    Book Now
-                </Button>
-            </form>
-        </Form>
+                            {/* Number of Travelers */}
+                            <AppInput
+                                control={form.control}
+                                name="travelers"
+                                label="Number of Travelers"
+                                type="number"
+                                placeholder="Enter number of travelers"
+                                icon="ic:outline-group"
+                            />
+                        </div>
+
+                        {/* Tour Type Selection */}
+                        <div className="grid grid-cols-2 gap-8 w-full">
+                            {formSelectConfigs.map((config) => (
+                                <FormSelect
+                                    key={config.name}
+                                    control={form.control}
+                                    name={config.name}
+                                    label={config.label}
+                                    placeholder={config.placeholder}
+                                    options={config.options}
+                                />
+                            ))}
+                        </div>
+                        {/* Check-in & Check-out Dates */}
+                        <div className="grid grid-cols-2 gap-8 w-full">
+                            {calendarFormConfigs.map((config) => (
+                                <CalendarForm
+                                    key={config.name}
+                                    control={form.control}
+                                    name={config.name}
+                                    label={config.label}
+                                    minDate={config.minDate}
+                                    maxDate={config.maxDate}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Travel Class Selection */}
+
+                        {/* Additional Form Inputs */}
+                        <div className="grid grid-cols-2 gap-8 w-full">
+                            {CONSTANTS.FORM_INPUTS.map((input) => (
+                                <AppInput
+                                    key={input.name}
+                                    control={
+                                        form.control as Control<BookingFormSchemaType>
+                                    }
+                                    name={input.name as BookingFormSchemaKey}
+                                    label={input.label}
+                                    placeholder={input.placeholder}
+                                    type={input.type}
+                                    icon={input.icon}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Extra Services Form */}
+                        <ExtraServicesForm
+                            control={form}
+                            services={CONSTANTS.CUSTOM_SERVICES}
+                            onServiceChange={handleServiceChange}
+                        />
+
+                        {/* Pricing Summary */}
+                        <PricingSummary totalPrice={totalPrice} />
+
+                        {/* Submit Button */}
+                        <Button
+                            type="submit"
+                            className="w-full py-5 rounded-full bg-primary text-white hover:scale-105 transition-all duration-200 ease-in-out shadow-lg hover:shadow-xl"
+                        >
+                            Book Now
+                        </Button>
+                    </form>
+                </Form>
+                {/* {showCheckout && ( */}
+                    <Elements
+                        stripe={stripePromise}
+                        options={{
+                            mode: "payment",
+                            // amount: convertToSubcurrency(totalPrice.totalCost),
+                            amount: 4260,
+                            currency: "usd",
+                        }}
+                    >
+                        <CheckoutForm
+                            amount={4260}
+                        />
+                    </Elements>
+                {/* )}  */}
+            </CardContent>
+        </Card>
     );
 }

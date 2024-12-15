@@ -65,7 +65,7 @@ const Sidebar = () => {
                     </div>
 
                     {/* Bottom section */}
-                    <div className="py-4">
+                    {/* <div className="py-4">
                         {sideBarItems
                             .filter((item) => item.position === "bottom")
                             .map((item, idx) => (
@@ -83,13 +83,13 @@ const Sidebar = () => {
                                     </div>
                                 </Fragment>
                             ))}
-                    </div>
+                    </div> */}
                 </aside>
             </div>
 
             {/* Toggle button */}
             <Button
-                className="absolute -right-3 top-3/4 transform -translate-y-1/2 flex h-6 w-6 items-center justify-center border border-muted-foreground/20 rounded-full bg-accent shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
+                className="absolute -right-3 top-20 transform -translate-y-1/2 flex h-6 w-6 items-center justify-center border border-muted-foreground/20 rounded-full bg-accent shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
                 onClick={toggleSidebar}
             >
                 <Icon

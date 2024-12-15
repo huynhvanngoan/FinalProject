@@ -8,6 +8,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "@/components/shared/Footer";
 import { Poppins, Sacramento } from "next/font/google";
+import AppProvider from "@/app/context/AppProvider";
+import { cookies } from "next/headers";
+import { DataProvider } from "@/app/context/AppContext";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -41,7 +44,8 @@ export default async function RootLayout({
     params: { locale: string };
 }>) {
     const messages = await getMessages();
-
+    const cookieStore = cookies();
+    const sessionToken = cookieStore.get("sessionToken");
     return (
         <html lang={locale}>
             <body
@@ -54,10 +58,14 @@ export default async function RootLayout({
                     disableTransitionOnChange
                 >
                     <NextIntlClientProvider messages={messages}>
-                        <Header />
-                        {children}
-                        <Footer />
-                        <ToastContainer />
+                        <AppProvider initialSessionToken={sessionToken?.value}>
+                            <DataProvider>
+                                <Header />
+                                {children}
+                                <Footer />
+                                <ToastContainer />
+                            </DataProvider>
+                        </AppProvider>
                     </NextIntlClientProvider>
                 </ThemeProvider>
             </body>

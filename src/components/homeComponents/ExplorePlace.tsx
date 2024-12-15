@@ -91,7 +91,7 @@ const ExplorePlace = () => {
                         date={tour.date}
                         price={tour.price}
                         rating={tour.rating}
-                        link={`/${locale}/${tour.link}`}
+                        link={`/${locale}/our-tour/${tour.link}`}
                     />
                 ))}
             </div>

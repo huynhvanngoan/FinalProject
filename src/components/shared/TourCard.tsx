@@ -6,13 +6,13 @@ import { useTranslations } from "next-intl";
 
 interface TourCardProps {
     imageUrl?: string | StaticImageData;
-    days: number;
+    days: any;
     title: string;
     location: string;
-    date: string;
+    date: any;
     price: number;
-    rating: number;
-    link: string;
+    rating?: number;
+    link?: string;
 }
 
 const TourCard: React.FC<TourCardProps> = ({
@@ -25,7 +25,7 @@ const TourCard: React.FC<TourCardProps> = ({
     rating,
     link = "/",
 }) => {
-    const t = useTranslations("General")
+    const t = useTranslations("General");
     return (
         <Link href={link}>
             <div className="bg-white w-full shadow-md rounded-lg overflow-hidden border border-gray-200 cursor-pointer group transform transition-transform duration-300 hover:scale-105">
